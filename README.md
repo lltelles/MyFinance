@@ -12,4 +12,4 @@ Linguagem: JavaScript
 
 Arquitetura: MVC (Model-View-Controller)
 
-Banco de Dados: (MySQL)
+Banco de Dados: (Firebase)
