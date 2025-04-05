@@ -1,0 +1,21 @@
+.recent-transactions {
+  flex: 1;
+  background: white;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.transaction-list div {
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 5px;
+}
+.income {
+  background: #e0f8e0;
+  color: green;
+}
+.expense {
+  background: #f8e0e0;
+  color: red;
+}
