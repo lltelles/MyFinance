@@ -8,6 +8,9 @@ class AddTransaction extends HTMLElement {
   }
 
   connectedCallback() {
+    const checkedExpense = this.transactionType === "expense" ? "checked" : "";
+    const checkedIncome = this.transactionType === "income" ? "checked" : "";
+
     this.shadowRoot.innerHTML = `
       <style>
         :host {
@@ -32,7 +35,7 @@ class AddTransaction extends HTMLElement {
           border-radius: var(--radius);
           box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
           overflow: hidden;
-          width: 100%;
+          width: 98%;
         }
 
         .card-header {
@@ -176,15 +179,11 @@ class AddTransaction extends HTMLElement {
         <div class="card-content space-y-4">
           <div class="radio-group flex space-x-4">
             <div class="flex items-center space-x-2">
-              <input type="radio" value="expense" id="expense" name="transaction-type" ${
-                this.transactionType === "expense" ? "checked" : ""
-              }>
+              <input type="radio" value="expense" id="expense" name="transaction-type" ${checkedExpense}>
               <label for="expense">Despesa</label>
             </div>
             <div class="flex items-center space-x-2">
-              <input type="radio" value="income" id="income" name="transaction-type" ${
-                this.transactionType === "income" ? "checked" : ""
-              }>
+              <input type="radio" value="income" id="income" name="transaction-type" ${checkedIncome}>
               <label for="income">Receita</label>
             </div>
           </div>

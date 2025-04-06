@@ -3,14 +3,12 @@ class RecentTransactions extends HTMLElement {
     this.innerHTML = `
     <style>
   .recent-transactions {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-    max-width: 400px;
-    margin: 0 auto;
-    border: 1px solid #e2e8f0;
+    font-family: sans-serif;
+    width: 90%;
     border-radius: 8px;
-    padding: 20px;
     background-color: white;
-    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+
   }
 
   .recent-transactions h3 {
