@@ -10,6 +10,6 @@ Tecnologias Utilizadas
 
 Linguagem: JavaScript
 
-Arquitetura: MVC (Model-View-Controller)
+Arquitetura: Camadas (Layers)
 
-Banco de Dados: (Firebase)
+Banco de Dados: Firebase
