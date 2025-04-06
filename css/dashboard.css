@@ -35,13 +35,6 @@ body {
   gap: 2rem;
 }
 
-/* .analytics {
-  display: flex;
-  flex-wrap: wrap;
-  margin-top: 20px;
-  gap: 1rem;
-} */
-
 @media (max-width: 768px) {
   .analytics,
   .transactions {

@@ -6,7 +6,6 @@ class ExpenseAnalytics extends HTMLElement {
           <p>Distribuição de gastos por categoria</p>
           <div class="content">
           <canvas id="expenseChart" width="300" height="300"></canvas>
-        
           </div>
         </div>
       `;
