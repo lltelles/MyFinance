@@ -40,7 +40,7 @@ class AddTransaction extends HTMLElement {
         }
 
         .card-content {
-          padding: 1.5rem;
+          padding: 1rem;
         }
 
         h2 {
@@ -71,6 +71,7 @@ class AddTransaction extends HTMLElement {
 
         .space-x-2 > * + * {
           margin-left: 0.5rem;
+          margin-right: 0.5rem;
         }
 
         .flex {
@@ -81,11 +82,6 @@ class AddTransaction extends HTMLElement {
           align-items: center;
         }
 
-        .w-full {
-          width: 100%;
-        }
-
-        /* Form elements */
         label {
           font-size: 0.875rem;
           font-weight: 500;
@@ -115,7 +111,6 @@ class AddTransaction extends HTMLElement {
           box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.2);
         }
 
-        /* Radio buttons */
         .radio-group {
           display: flex;
         }
@@ -150,7 +145,6 @@ class AddTransaction extends HTMLElement {
           box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.2);
         }
 
-        /* Button */
         button {
           width: 100%;
           background-color: var(--primary);
@@ -173,6 +167,7 @@ class AddTransaction extends HTMLElement {
           box-shadow: 0 0 0 2px var(--ring);
         }
       </style>
+
       <div class="card">
         <div class="card-header">
           <h2>Adicionar Transação</h2>

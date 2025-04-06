@@ -72,21 +72,25 @@
           <finance-cards
             title="Saldo total"
             content="R$ 12.580,00"
+            icon="💰"
           ></finance-cards>
           <finance-cards
             title="Receitas"
             content="R$ 4.550,00"
             color="green"
+            icon="📈"
           ></finance-cards>
           <finance-cards
             title="Despesas"
             content="R$ 2.180,00"
             color="red"
+            icon="📉"
           ></finance-cards>
           <finance-cards
             title="Economias"
             content="R$ 2.180,00"
             color="green"
+            icon="💸"
           ></finance-cards>
         </div>
 
@@ -97,10 +101,11 @@
       </div>
     </div>
   </body>
+  <script src="../js/components/sidebar/Sidebar.js"></script>
   <script src="../js/components/cards/Cards.js" defer></script>
   <script src="../js/components/analytics/generalView.js"></script>
   <script src="../js/components/analytics/mainCategories.js"></script>
-  <script src="../js/components/sidebar/Sidebar.js"></script>
+
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       const toggleButton = document.getElementById("sidebar-toggle");
