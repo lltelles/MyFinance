@@ -26,36 +26,43 @@ class RecentTransactions  extends HTMLElement {
         description: "Salário",
         amount: 3500,
         type: "income",
+        date:"01/05/2025"
       },
       {
         id: "2",
         description: "Freelance",
         amount: 1050,
         type: "income",
+        date:"01/05/2025"
       },
       {
         id: "3",
         description: "Aluguel",
         amount: 1200,
         type: "expense",
+        date:"01/05/2025"
       },
       {
         id: "4",
         description: "Supermercado",
         amount: 450,
         type: "expense",
+        date:"01/05/2025"
       },
     ]
   }
 
   createTransactionItem(transaction) {
     const item = document.createElement("div")
-    item.className = "transaction-item"
 
     const iconClass = transaction.type === "income" ? "icon-income" : "icon-expense"
     const amountClass = transaction.type === "income" ? "amount-income" : "amount-expense"
     const iconSymbol = transaction.type === "income" ? "↗" : "↘"
     const amountPrefix = transaction.type === "income" ? "+" : "-"
+    const leftBorderColor = transaction.type === "income" ? 'green-border' : 'red-border'
+
+    item.className =  `transaction-item ${leftBorderColor}`
+
 
     item.innerHTML = `
       <link rel="stylesheet" href="/css/components/recentTransactions.css">
@@ -65,6 +72,7 @@ class RecentTransactions  extends HTMLElement {
         </div>
         <div class="description">
           <p>${transaction.description}</p>
+          <p class="date">${transaction.date}</p>
         </div>
       </div>
       <div class="${amountClass}">

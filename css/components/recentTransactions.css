@@ -41,6 +41,14 @@
   border-radius: 8px;
 }
 
+.green-border {
+  border-left: 4px solid rgba(34, 197, 94, 0.8);
+}
+
+.red-border {
+  border-left: 4px solid rgba(239, 68, 68, 0.8);
+}
+
 .transaction-info {
   display: flex;
   align-items: center;
@@ -73,6 +81,12 @@
   font-size: 14px;
   font-weight: 500;
   color: #333;
+}
+
+.description .date {
+  font-size: 12px;
+  font-weight: 400;
+  color: #808080;
 }
 
 .amount-income,
