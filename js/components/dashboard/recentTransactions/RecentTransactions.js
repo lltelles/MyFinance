@@ -86,7 +86,12 @@ class RecentTransactions  extends HTMLElement {
     title.className = "card-title"
     title.textContent = "Transações recentes"
 
+    const subtitle = document.createElement("p")
+    subtitle.className = "card-subtitle"
+    subtitle.textContent = "Veja aqui suas transações mais recentes"
+
     header.appendChild(title)
+    header.appendChild(subtitle)
 
     const content = document.createElement("div")
     content.className = "card-content"

@@ -31,19 +31,19 @@ class FinancialSummaryCard extends HTMLElement {
         title: "Receitas",
         value: 4550.0,
         color: "#22c55e",
-        icon: "✓",
+        icon: "📈",
       },
       expenses: {
         title: "Despesas",
         value: 2180.0,
         color: "#ef4444",
-        icon: "📄",
+        icon: "📉",
       },
       savings: {
         title: "Economias",
         value: 2180.0,
         color: "#22c55e",
-        icon: "🐖",
+        icon: "💸",
       },
     }
 

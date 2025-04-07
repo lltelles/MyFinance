@@ -77,7 +77,7 @@
   width: 100%;
   padding: 10px 12px;
   border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 14px;
   box-sizing: border-box;
 }
@@ -92,7 +92,7 @@
 .submit-button {
   width: 100%;
   padding: 12px;
-  background-color: #a3cb38;
+  background-color: #82a12d;
   color: white;
   border: none;
   border-radius: 4px;
@@ -103,7 +103,7 @@
 }
 
 .submit-button:hover {
-  background-color: #82a12d;
+  background-color: #a3cb38;
 }
 
 .submit-button:focus {
