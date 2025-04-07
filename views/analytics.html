@@ -4,11 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MyFinance</title>
-    <link rel="stylesheet" href="../css/dashboard.css" />
-    <link rel="stylesheet" href="../css/cards.css" />
-    <link rel="stylesheet" href="../css/sidebar.css" />
-    <link rel="stylesheet" href="../css/generalView.css" />
-    <link rel="stylesheet" href="../css/mainCategories.css" />
+    <link rel="stylesheet" href="../css/views/dashboard.css" />
+    <link rel="stylesheet" href="../css/views/analytics.css" />
+    <link rel="stylesheet" href="../css/components/cards.css" />
+    <link rel="stylesheet" href="../css/components/sidebar.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
       body {
@@ -60,56 +59,27 @@
         Análise
       </div>
 
-      <div class="cards">
-        <finance-cards
-          title="Saldo total"
-          content="R$ 12.580,00"
-          icon="💰"
-        ></finance-cards>
-        <finance-cards
-          title="Receitas"
-          content="R$ 4.550,00"
-          color="green"
-          icon="📈"
-        ></finance-cards>
-        <finance-cards
-          title="Despesas"
-          content="R$ 2.180,00"
-          color="red"
-          icon="📉"
-        ></finance-cards>
-        <finance-cards
-          title="Economias"
-          content="R$ 2.180,00"
-          color="green"
-          icon="💸"
-        ></finance-cards>
+      <div class="summary-container">
+        <financial-summary-card type="balance"></financial-summary-card>
+        <financial-summary-card type="income"></financial-summary-card>
+        <financial-summary-card type="expenses"></financial-summary-card>
+        <financial-summary-card type="savings"></financial-summary-card>
       </div>
 
       <div class="analytics">
         <expense-analytics></expense-analytics>
         <main-categories></main-categories>
+
+        <!-- <div class="button-container">
+          <button id="updateData">Atualizar Dados</button>
+          <button id="resetData">Resetar Dados</button>
+        </div> -->
       </div>
     </div>
   </body>
   <script src="../js/components/sidebar/Sidebar.js"></script>
   <script src="../js/components/cards/Cards.js" defer></script>
-  <script src="../js/components/analytics/generalView.js"></script>
+  <script src="../js/components/analytics/expanseAnalytics.js"></script>
   <script src="../js/components/analytics/mainCategories.js"></script>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const toggleButton = document.getElementById("sidebar-toggle");
-      const body = document.body;
-
-      toggleButton.addEventListener("click", function () {
-        body.classList.toggle("sidebar-open");
-
-        const sidebar = document.querySelector("app-sidebar");
-        if (sidebar && typeof sidebar.toggle === "function") {
-          sidebar.toggle();
-        }
-      });
-    });
-  </script>
+  <script src="../js/views/analytics.js"></script>
 </html>

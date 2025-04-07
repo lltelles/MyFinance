@@ -4,11 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard Financeiro</title>
-    <link rel="stylesheet" href="../css/dashboard.css" />
-    <link rel="stylesheet" href="../css/recentTransactions.css" />
-    <link rel="stylesheet" href="../css/addTransaction.css" />
-    <link rel="stylesheet" href="../css/cards.css" />
-    <link rel="stylesheet" href="../css/sidebar.css" />
+    <link rel="stylesheet" href="../css/views/dashboard.css" />
+    <link rel="stylesheet" href="../css/components/cards.css" />
+    <link rel="stylesheet" href="../css/components/sidebar.css" />
     <style>
       body {
         margin: 0;
@@ -60,55 +58,22 @@
         Dashboard
       </div>
 
-      <div class="cards">
-        <finance-cards
-          title="Saldo total"
-          content="R$ 12.580,00"
-          icon="💰"
-        ></finance-cards>
-        <finance-cards
-          title="Receitas"
-          content="R$ 4.550,00"
-          color="green"
-          icon="📈"
-        ></finance-cards>
-        <finance-cards
-          title="Despesas"
-          content="R$ 2.180,00"
-          color="red"
-          icon="📉"
-        ></finance-cards>
-        <finance-cards
-          title="Economias"
-          content="R$ 2.180,00"
-          color="green"
-          icon="💸"
-        ></finance-cards>
+      <div class="summary-container">
+        <financial-summary-card type="balance"></financial-summary-card>
+        <financial-summary-card type="income"></financial-summary-card>
+        <financial-summary-card type="expenses"></financial-summary-card>
+        <financial-summary-card type="savings"></financial-summary-card>
       </div>
 
       <div class="transactions">
-        <add-transaction></add-transaction>
+        <transaction-form></transaction-form>
         <recent-transactions></recent-transactions>
       </div>
     </div>
   </body>
   <script src="../js/components/sidebar/Sidebar.js"></script>
   <script src="../js/components/cards/Cards.js" defer></script>
-  <script src="../js/components/dashboard/addTransaction/AddTransaction.js"></script>
+  <script src="../js/components/dashboard/transactionForm/TransactionForm.js"></script>
   <script src="../js/components/dashboard/recentTransactions/RecentTransactions.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const toggleButton = document.getElementById("sidebar-toggle");
-      const body = document.body;
-
-      toggleButton.addEventListener("click", function () {
-        body.classList.toggle("sidebar-open");
-
-        const sidebar = document.querySelector("app-sidebar");
-        if (sidebar && typeof sidebar.toggle === "function") {
-          sidebar.toggle();
-        }
-      });
-    });
-  </script>
+  <script src="../js/views/dashboard.js"></script>
 </html>

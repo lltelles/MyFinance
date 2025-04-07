@@ -1,74 +1,130 @@
-class RecentTransactions extends HTMLElement {
+class RecentTransactions  extends HTMLElement {
+  constructor() {
+    super()
+    this.attachShadow({ mode: "open" })
+
+    const linkElem = document.createElement("link")
+    linkElem.setAttribute("rel", "stylesheet")
+    linkElem.setAttribute("href", "transaction-card.css")
+
+    this.shadowRoot.appendChild(linkElem)
+
+    this.render()
+  }
+
+  formatCurrency(value) {
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(value)
+  }
+
+  getTransactions() {
+    return [
+      {
+        id: "1",
+        description: "Salário",
+        amount: 3500,
+        type: "income",
+      },
+      {
+        id: "2",
+        description: "Freelance",
+        amount: 1050,
+        type: "income",
+      },
+      {
+        id: "3",
+        description: "Aluguel",
+        amount: 1200,
+        type: "expense",
+      },
+      {
+        id: "4",
+        description: "Supermercado",
+        amount: 450,
+        type: "expense",
+      },
+    ]
+  }
+
+  createTransactionItem(transaction) {
+    const item = document.createElement("div")
+    item.className = "transaction-item"
+
+    const iconClass = transaction.type === "income" ? "icon-income" : "icon-expense"
+    const amountClass = transaction.type === "income" ? "amount-income" : "amount-expense"
+    const iconSymbol = transaction.type === "income" ? "↗" : "↘"
+    const amountPrefix = transaction.type === "income" ? "+" : "-"
+
+    item.innerHTML = `
+      <link rel="stylesheet" href="/css/components/recentTransactions.css">
+      <div class="transaction-info">
+        <div class="${iconClass}">
+          <span class="icon">${iconSymbol}</span>
+        </div>
+        <div class="description">
+          <p>${transaction.description}</p>
+        </div>
+      </div>
+      <div class="${amountClass}">
+        ${amountPrefix} ${this.formatCurrency(transaction.amount)}
+      </div>
+    `
+
+    return item
+  }
+
+  render() {
+    const card = document.createElement("div")
+    card.className = "card"
+
+    const header = document.createElement("div")
+    header.className = "card-header"
+
+    const title = document.createElement("h2")
+    title.className = "card-title"
+    title.textContent = "Transações recentes"
+
+    header.appendChild(title)
+
+    const content = document.createElement("div")
+    content.className = "card-content"
+
+    const transactions = this.getTransactions()
+
+    transactions.forEach((transaction) => {
+      content.appendChild(this.createTransactionItem(transaction))
+    })
+
+    card.appendChild(header)
+    card.appendChild(content)
+
+    while (this.shadowRoot.firstChild) {
+      this.shadowRoot.removeChild(this.shadowRoot.firstChild)
+    }
+
+    const linkElem = document.createElement("link")
+    linkElem.setAttribute("rel", "stylesheet")
+    linkElem.setAttribute("href", "transaction-card.css")
+
+    this.shadowRoot.appendChild(linkElem)
+    this.shadowRoot.appendChild(card)
+  }
+
+  set transactions(value) {
+    this._transactions = value
+    this.render()
+  }
+
+  get transactions() {
+    return this._transactions || this.getTransactions()
+  }
+
   connectedCallback() {
-    this.innerHTML = `
-    <style>
-  .recent-transactions {
-    font-family: sans-serif;
-    width: 90%;
-    border-radius: 8px;
-    background-color: white;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
-
-  }
-
-  .recent-transactions h3 {
-    font-size: 1.125rem;
-    font-weight: 600;
-    margin: 0 0 16px 0;
-    color: #1e293b;
-  }
-
-  .transaction-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .transaction-list div {
-    padding: 12px 16px;
-    border-radius: 6px;
-    font-size: 0.875rem;
-    display: flex;
-    justify-content: space-between;
-    background-color: #f8fafc;
-    border: 1px solid #e2e8f0;
-    transition: all 0.2s ease;
-  }
-
-  .transaction-list div:hover {
-    background-color: #f1f5f9;
-  }
-
-  .income {
-    color: #15803d;
-  }
-
-  .income::before {
-    content: "+";
-    margin-right: 4px;
-  }
-
-  .expense {
-    color: #b91c1c;
-  }
-
-  .expense::before {
-    content: "-";
-    margin-right: 4px;
-  }
-</style>
-
-<div class="recent-transactions">
-  <h3>Transações Recentes</h3>
-   <div class="transaction-list">
-    <div class="income">Salário - R$ 3500,00</div>
-    <div class="expense">Aluguel - R$ 1200,00</div>
-    <div class="expense">Supermercado - R$ 450,00</div>
-    <div class="income">Freelance - R$ 1050,00</div>
-    <div class="income">Conta de luz - R$ 180,00</div>
-  </div>
-</div>`;
+    this.render()
   }
 }
 
-customElements.define("recent-transactions", RecentTransactions);
+customElements.define("recent-transactions", RecentTransactions )
+

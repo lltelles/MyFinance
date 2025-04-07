@@ -2,6 +2,7 @@ body {
   font-family: Arial, sans-serif;
   background-color: #f5f5dc;
 }
+
 .container {
   width: 100%;
 }
@@ -11,29 +12,29 @@ body {
   font-weight: bold;
 }
 
-.cards {
+.summary-container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  margin: 1rem 0;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  margin-top: 1rem;
 }
 
-@media (max-width: 768px) {
-  .cards {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-}
-
-.transactions,
-.analytics {
+.transactions {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   margin-top: 1.5rem;
-  gap: 2rem;
+  gap: 1rem;
 }
 
 @media (max-width: 768px) {
-  .analytics,
+  .summary-container {
+    margin-top: 1rem;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
   .transactions {
     grid-template-columns: 1fr;
   }
