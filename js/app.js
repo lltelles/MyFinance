@@ -11,6 +11,10 @@ const firebaseConfig = {
     measurementId: "G-VNCJTDFD9E"
   };
 
+  
+export const app = initializeApp(firebaseConfig);
+export const db = getFirestore(app);
+
 export async function docAdd(name, email, age) {
     
     try {
@@ -32,6 +36,3 @@ export async function docGet() {
         console.log(`${i++} -- ${doc.id} => ${JSON.stringify(doc.data(), null, 2)}`);
     });
 }
-
-export const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
