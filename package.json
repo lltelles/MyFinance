@@ -1,0 +1,23 @@
+{
+  "name": "myfinance",
+  "version": "1.0.0",
+  "description": "📌 Sobre o Projeto",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lltelles/MyFinance.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lltelles/MyFinance/issues"
+  },
+  "homepage": "https://github.com/lltelles/MyFinance#readme",
+  "dependencies": {
+    "firebase": "^11.6.0"
+  }
+}
