@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+body {
+  margin: 0; 
+  padding: 0;
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: column;
+  font-family: 'Poppins', sans-serif;
+
+}
+
+html {
+  height: 500vh;
+}
+
+.container {
+  max-width: 1280px;
+  margin: auto;
+  position: relative; 
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+
+.menu {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  
+}
+
+.menu ul {
+  display: flex;
+  gap: 40px;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.menu ul li a {
+  color: #000000;
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: 500;
+}
+.menu ul li a:hover{
+  text-decoration: underline;
+  
+}
+
+header {
+  width: 100%;
+  padding: 60px 4%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  transition: 1s;
+}
+
+header.rolagem {
+  background-color: #333333;
+  padding: 20px 4%;
+}
+
+header.rolagem ul li a {
+  color: #FFF !important;
+}
+
+
+.btn-login {
+  margin-left: auto;
+}
+
+.btn-login button {
+  width: 130px;
+  height: 40px;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.4);
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: .3s ease;
+}
+
+.btn-login button:hover {
+  background-color: #000000;
+  color: #ffffff;
+
+}
+
+.banner {
+  height: 100vh;
+  background-image: url(../img/teste05.jpg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 10px 40px #00000056;
+
+}
+
+.banner h1 {
+  font-size: 4em;
+}
+
+.banner h1 span {
+  color: #ffffff;
+}
+  
