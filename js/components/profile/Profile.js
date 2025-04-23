@@ -13,7 +13,7 @@ class ProfileDashboard extends HTMLElement {
       name: "Ana Silva",
       role: "Desenvolvedora Full Stack",
       avatar: "https://via.placeholder.com/128",
-      email: "ana.silva@email.com",
+      email: "",
       location: "São Paulo, Brasil",
       company: "TechCorp Brasil",
       education: "Universidade de São Paulo",
@@ -33,6 +33,32 @@ class ProfileDashboard extends HTMLElement {
     this._activeTab = "info"
 
     this.render()
+  }
+
+  async connectedCallback() {
+    await this.loadProfileData(); // Carrega os dados quando o componente é conectado
+    this.render();
+  }
+
+  async loadProfileData() {
+    try {
+      const userId = "GOgkjvRY6yj0mYJI9pYb";
+      const userDocRef = doc(db, "profile", userId);
+      const userDoc = await getDoc(userDocRef);
+
+      if (userDoc.exists()) {
+        this.profileData = {
+          ...userDoc.data(),
+          // Mantém os valores padrão se não vierem do Firestore
+          email: userDoc.data().email}
+      } else {
+        console.log("Documento não encontrado!");
+      }
+    } catch (error) {
+      console.error("Erro ao carregar perfil:", error);
+      this._profileData.name = "Erro ao carregar perfil";
+    }
+    this.render();
   }
 
   render() {
