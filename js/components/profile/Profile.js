@@ -1,3 +1,6 @@
+import { db } from "../../app.js";
+import { getDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
 class ProfileDashboard extends HTMLElement {
   constructor() {
     super()
@@ -10,10 +13,10 @@ class ProfileDashboard extends HTMLElement {
     this.shadowRoot.appendChild(linkElem)
 
     this._profileData = {
-      name: "Ana Silva",
+      name: "Undefinied",
       role: "Desenvolvedora Full Stack",
-      avatar: "https://via.placeholder.com/128",
-      email: "ana.silva@email.com",
+      avatar: "",
+      email: "",
       location: "São Paulo, Brasil",
       company: "TechCorp Brasil",
       education: "Universidade de São Paulo",
@@ -33,6 +36,30 @@ class ProfileDashboard extends HTMLElement {
     this._activeTab = "info"
 
     this.render()
+  }
+
+  async connectedCallback() {
+    await this.loadProfileData(); // Carrega os dados quando o componente é conectado
+    this.render();
+  }
+
+  async loadProfileData() {
+    try {
+      const userId = "4z4dfxUSmUnsdrHHbmTu";
+      const userDocRef = doc(db, "user", userId);
+      const userDoc = await getDoc(userDocRef);
+
+      if (userDoc.exists()) {
+        this._profileData.email = userDoc.data().email
+        this._profileData.name = userDoc.data().full_name
+      } else {
+        console.log("Documento não encontrado!");
+      }
+    } catch (error) {
+      console.error("Erro ao carregar perfil:", error);
+      this._profileData.email = "Erro ao carregar perfil";
+    }
+    this.render();
   }
 
   render() {
@@ -219,9 +246,7 @@ class ProfileDashboard extends HTMLElement {
     return this._activeTab
   }
 
-  connectedCallback() {
-    this.render()
-  }
+  
 }
 
 customElements.define("profile-dashboard", ProfileDashboard)
