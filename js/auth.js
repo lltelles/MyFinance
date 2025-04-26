@@ -29,31 +29,38 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // Elementos do formulário
-  const emailInput = document.getElementById('email');
-  const passwordInput = document.getElementById('password');
   const loginForm = document.getElementById('loginForm');
-  const registerForm = document.getElementById('registerForm');
+  const registerForm = document.querySelector('.register-container');
 
-  // Funções auxiliares
+  // Funções auxiliares atualizadas
   function showError(input, message) {
-    const formGroup = input.closest('.form-group');
-    let errorElement = formGroup.querySelector('.error-message');
-
-    if (!errorElement) {
-      errorElement = document.createElement('small');
-      errorElement.className = 'error-message';
-      formGroup.appendChild(errorElement);
+    const inputBox = input.closest('.input-box');
+    
+    if (!inputBox) {
+      console.error('Container do input não encontrado');
+      return;
     }
 
+    clearError(input);
+
+    const errorElement = document.createElement('small');
+    errorElement.className = 'error-message';
     errorElement.textContent = message;
+    errorElement.style.color = 'red';
+    errorElement.style.display = 'block';
+    errorElement.style.marginTop = '5px';
+    
+    inputBox.appendChild(errorElement);
     input.classList.add('error');
   }
 
   function clearError(input) {
-    const formGroup = input.closest('.form-group');
-    const errorElement = formGroup.querySelector('.error-message');
-
+    const inputBox = input.closest('.input-box');
+    if (!inputBox) return;
+    
+    const errorElement = inputBox.querySelector('.error-message');
     if (errorElement) errorElement.remove();
+    
     input.classList.remove('error');
   }
 
@@ -66,6 +73,9 @@ document.addEventListener('DOMContentLoaded', function() {
     loginForm.addEventListener('submit', async function(e) {
       e.preventDefault();
 
+      const emailInput = loginForm.querySelector('input[type="text"]');
+      const passwordInput = loginForm.querySelector('input[type="password"]');
+      
       const email = emailInput.value.trim();
       const password = passwordInput.value.trim();
 
@@ -108,71 +118,84 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Cadastro
   if (registerForm) {
-    registerForm.addEventListener('submit', async function(e) {
+    const registerSubmitHandler = async function(e) {
       e.preventDefault();
-
-      const name = document.getElementById('name').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value.trim();
-      const confirmPassword = document.getElementById('confirmPassword').value.trim();
+      
+      const inputs = registerForm.querySelectorAll('.input-field');
+      const [nome, sobrenome, email, senha, confirmacaoSenha] = Array.from(inputs).map(input => {
+        const value = input.value.trim();
+        clearError(input);
+        return value;
+      });
 
       let valid = true;
-      if (!name) {
-        showError(document.getElementById('name'), 'Nome é obrigatório');
+      
+      if (!nome) {
+        showError(inputs[0], 'Nome é obrigatório');
         valid = false;
       }
-
+      
+      if (!sobrenome) {
+        showError(inputs[1], 'Sobrenome é obrigatório');
+        valid = false;
+      }
+      
       if (!email) {
-        showError(document.getElementById('email'), 'E-mail é obrigatório');
+        showError(inputs[2], 'E-mail é obrigatório');
         valid = false;
       } else if (!isValidEmail(email)) {
-        showError(document.getElementById('email'), 'E-mail inválido');
+        showError(inputs[2], 'E-mail inválido');
         valid = false;
       }
-
-      if (!password) {
-        showError(document.getElementById('password'), 'Senha é obrigatória');
+      
+      if (!senha) {
+        showError(inputs[3], 'Senha é obrigatória');
         valid = false;
-      } else if (password.length < 6) {
-        showError(document.getElementById('password'), 'Mínimo 6 caracteres');
-        valid = false;
-      }
-
-      if (password !== confirmPassword) {
-        showError(document.getElementById('confirmPassword'), 'Senhas não coincidem');
+      } else if (senha.length < 6) {
+        showError(inputs[3], 'Mínimo 6 caracteres');
         valid = false;
       }
-
+      
+      if (senha !== confirmacaoSenha) {
+        showError(inputs[4], 'Senhas não coincidem');
+        valid = false;
+      }
+      
       if (!valid) return;
-
+      
       try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-
+        const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
+        
         await updateProfile(userCredential.user, {
-          displayName: name
+          displayName: `${nome} ${sobrenome}`
         });
-
-        await setDoc(doc(db, 'users', userCredential.user.uid), {
-          name: name,
-          email: email,
-          createdAt: serverTimestamp()
+        
+        await setDoc(doc(db, 'usuarios', userCredential.user.uid), {
+          nome,
+          sobrenome,
+          email,
+          criadoEm: serverTimestamp()
         });
-
+        
+        alert('Cadastro realizado com sucesso!');
         window.location.href = 'index.html';
       } catch (error) {
-        console.error('Erro cadastro:', error);
-
-        switch (error.code) {
-          case 'auth/email-already-in-use':
-            showError(document.getElementById('email'), 'E-mail já cadastrado');
-            break;
-          case 'auth/weak-password':
-            showError(document.getElementById('password'), 'Senha muito fraca');
-            break;
-          default:
-            showError(document.getElementById('email'), 'Erro ao cadastrar');
+        console.error('Erro no cadastro:', error);
+        
+        if (error.code === 'auth/email-already-in-use') {
+          showError(inputs[2], 'E-mail já cadastrado');
+        } else if (error.code === 'auth/weak-password') {
+          showError(inputs[3], 'Senha muito fraca');
+        } else {
+          showError(inputs[0], 'Erro ao cadastrar');
         }
       }
-    });
+    };
+
+    // Encontra o botão de submit no register-container
+    const registerSubmit = registerForm.querySelector('input[type="submit"]');
+    if (registerSubmit) {
+      registerSubmit.addEventListener('click', registerSubmitHandler);
+    }
   }
 });
