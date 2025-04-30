@@ -1,4 +1,4 @@
-import { db } from "../../app.js";
+import { db, auth } from "../../app.js";
 import { getDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 class ProfileDashboard extends HTMLElement {
@@ -13,13 +13,13 @@ class ProfileDashboard extends HTMLElement {
     this.shadowRoot.appendChild(linkElem)
 
     this._profileData = {
-      name: "Undefinied",
-      role: "Desenvolvedora Full Stack",
-      avatar: "",
+      name: "",
+      role: "",
+      avatar: `https://api.dicebear.com/7.x/micah/svg?seed=${Math.random()}`,
       email: "",
-      location: "São Paulo, Brasil",
-      company: "TechCorp Brasil",
-      education: "Universidade de São Paulo",
+      location: "",
+      company: "",
+      education: "",
       skills: [
         { name: "Desenvolvimento Frontend", value: 85, max: 100 },
         { name: "Desenvolvimento Backend", value: 75, max: 100 },
@@ -39,30 +39,44 @@ class ProfileDashboard extends HTMLElement {
   }
 
   async connectedCallback() {
-    await this.loadProfileData(); // Carrega os dados quando o componente é conectado
-    this.render();
+    // Adiciona listener para mudanças de autenticação
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        await this.loadProfileData(user.uid);
+      } else {
+        console.log("Usuário não autenticado");
+        this._profileData.email = "Faça login para ver seu perfil";
+      }
+      this.render();
+    });
   }
 
-  async loadProfileData() {
+  async loadProfileData(userId) {
     try {
-      const userId = "4z4dfxUSmUnsdrHHbmTu";
-      const userDocRef = doc(db, "user", userId);
+      const userDocRef = doc(db, "user", userId); // Note "users" no plural
       const userDoc = await getDoc(userDocRef);
 
       if (userDoc.exists()) {
-        this._profileData.email = userDoc.data().email
-        this._profileData.name = userDoc.data().full_name
+        const userData = userDoc.data();
+        this._profileData = {
+          ...this._profileData, // Mantém os valores padrão
+          ...userData,         // Sobrescreve com os dados do Firestore
+          email: userData.email || auth.currentUser?.email || "" // Pega email do auth se não tiver no Firestore
+        };
       } else {
-        console.log("Documento não encontrado!");
+        console.log("Documento não encontrado! Usando dados padrão.");
+        // Se não existir no Firestore, pelo menos mostra o email do auth
+        this._profileData.email = auth.currentUser?.email || "";
       }
     } catch (error) {
       console.error("Erro ao carregar perfil:", error);
       this._profileData.email = "Erro ao carregar perfil";
     }
-    this.render();
+    this.render
   }
 
   render() {
+
     const container = document.createElement("div")
     container.className = "profile-dashboard"
 

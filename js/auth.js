@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function() {
       e.preventDefault();
       
       const inputs = registerForm.querySelectorAll('.input-field');
-      const [nome, sobrenome, email, senha, confirmacaoSenha] = Array.from(inputs).map(input => {
+      const [name, last_name, email, senha, confirmacaoSenha] = Array.from(inputs).map(input => {
         const value = input.value.trim();
         clearError(input);
         return value;
@@ -130,13 +130,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
       let valid = true;
       
-      if (!nome) {
-        showError(inputs[0], 'Nome é obrigatório');
+      if (!name) {
+        showError(inputs[0], 'nome é obrigatório');
         valid = false;
       }
       
-      if (!sobrenome) {
-        showError(inputs[1], 'Sobrenome é obrigatório');
+      if (!last_name) {
+        showError(inputs[1], 'sobrenome é obrigatório');
         valid = false;
       }
       
@@ -167,14 +167,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
         
         await updateProfile(userCredential.user, {
-          displayName: `${nome} ${sobrenome}`
+          displayName: `${name} ${last_name}`
         });
         
-        await setDoc(doc(db, 'usuarios', userCredential.user.uid), {
-          nome,
-          sobrenome,
+        await setDoc(doc(db, 'user', userCredential.user.uid), {
+          name,
+          last_name,
           email,
-          criadoEm: serverTimestamp()
+          create_at: serverTimestamp()
         });
         
         alert('Cadastro realizado com sucesso!');
