@@ -13,13 +13,13 @@ class ProfileDashboard extends HTMLElement {
     this.shadowRoot.appendChild(linkElem)
 
     this._profileData = {
-      name: "Undefinied",
-      role: "Desenvolvedora Full Stack",
-      avatar: "",
+      name: "",
+      role: "",
+      avatar: `https://api.dicebear.com/7.x/micah/svg?seed=${Math.random()}`,
       email: "",
-      location: "São Paulo, Brasil",
-      company: "TechCorp Brasil",
-      education: "Universidade de São Paulo",
+      location: "",
+      company: "",
+      education: "",
       skills: [
         { name: "Desenvolvimento Frontend", value: 85, max: 100 },
         { name: "Desenvolvimento Backend", value: 75, max: 100 },

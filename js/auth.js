@@ -131,12 +131,12 @@ document.addEventListener('DOMContentLoaded', function() {
       let valid = true;
       
       if (!name) {
-        showError(inputs[0], 'name é obrigatório');
+        showError(inputs[0], 'nome é obrigatório');
         valid = false;
       }
       
       if (!last_name) {
-        showError(inputs[1], 'last_name é obrigatório');
+        showError(inputs[1], 'sobrenome é obrigatório');
         valid = false;
       }
       

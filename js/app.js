@@ -15,5 +15,4 @@ export const app = initializeApp({
     measurementId: "G-VNCJTDFD9E"
   });
 export const db = getFirestore(app);
-
 export const auth = getAuth(app);
