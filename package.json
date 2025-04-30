@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/lltelles/MyFinance#readme",
   "dependencies": {
-    "firebase": "^11.6.0"
+    "firebase": "^11.6.0",
+    "firebase-tools": "^14.2.1"
   }
 }
