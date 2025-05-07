@@ -1,5 +1,13 @@
-import { db } from "../../../app.js";
-import { getDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { db, auth } from "../../../app.js";
+import {
+  collection,
+  doc,
+  query,
+  where,
+  getDocs,
+  orderBy,
+  limit
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 class RecentTransactions extends HTMLElement {
   constructor() {
@@ -22,34 +30,36 @@ class RecentTransactions extends HTMLElement {
     }).format(value);
   }
 
-  async getTransactions() {
-    try {
-      const userDocRef = doc(db, "user_transactions", "k6FiJnchr2qRkIPV5RGV");
-      const userDoc = await getDoc(userDocRef);
 
-      if (userDoc.exists()) {
-        const userData = userDoc.data();
-        
-        // Verifica se existe um campo de transações e formata corretamente
-        if (userData.transactions && Array.isArray(userData.transactions)) {
-          this.transactions = userData.transactions;
-        } else {
-          // Se não houver array de transações, cria um array com os dados principais
-          this.transactions = [{
-            category: userData.category || "Sem categoria",
-            value: userData.value || 0,
-            transaction_type: userData.transaction_type || "expense",
-            date: userData.date || new Date().toLocaleDateString()
-          }];
-        }
-        return this._transactions;
-      } else {
-        console.log("Documento não encontrado!");
-        this.transactions = [];
-        return [];
-      }
+  async getTransactions(userId) {
+    try {
+      // 1. Referência à subcoleção de transações do usuário
+      const transactionsRef = collection(db, "user", userId, "user_transactions");
+      
+      // 2. Criar query para buscar as transações
+      const q = query(
+        transactionsRef,
+        orderBy("date", "desc"), // Ordena por data (mais recente primeiro)
+        limit(10)               // Limita a 10 resultados
+      );
+  
+      // 3. Executar a query
+      const querySnapshot = await getDocs(q);
+      
+      // 4. Processar os resultados
+      const transactions = [];
+      querySnapshot.forEach((doc) => {
+        transactions.push({
+          id: doc.id, // Inclui o ID do documento
+          ...doc.data() // Inclui todos os campos do documento
+        });
+      });
+  
+      this.transactions = transactions;
+      return transactions;
+  
     } catch (error) {
-      console.error("Erro ao carregar dados:", error);
+      console.error("Erro ao carregar transações:", error);
       this.transactions = [];
       return [];
     }
@@ -111,7 +121,7 @@ class RecentTransactions extends HTMLElement {
       this._transactions.forEach((transaction) => {
         content.appendChild(this.createTransactionItem(transaction));
       });
-    } 
+    }
 
     card.appendChild(header);
     card.appendChild(content);
@@ -145,7 +155,15 @@ class RecentTransactions extends HTMLElement {
   }
 
   async connectedCallback() {
-    await this.getTransactions();
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        await this.getTransactions(user.uid);
+        this.renderLogoutButton();
+      } else {
+        console.log("Usuário não autenticado");
+      }
+      this.render();
+    });
     this.render();
   }
 }

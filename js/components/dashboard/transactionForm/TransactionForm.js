@@ -1,5 +1,5 @@
 
-import { db } from "../../../app.js"
+import { db, auth } from "../../../app.js"
 import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"
 
 
@@ -90,6 +90,11 @@ class TransactionForm extends HTMLElement {
       const value = Number.parseFloat(this.shadowRoot.querySelector("#amount").value)
       const category = this.shadowRoot.querySelector("#category").value
       const date = this.shadowRoot.querySelector("#date").value
+      const user = auth.currentUser;
+      if (!user) {
+        console.error("Nenhum usuário autenticado encontrado");
+        return;
+      }
       const transaction = {
         transaction_type: type,
         description,
@@ -99,7 +104,8 @@ class TransactionForm extends HTMLElement {
       }
       console.log("Submitting transaction payload:", transaction) // Log payload
       try {
-        await addDoc(collection(db, "user_transactions"), transaction)
+        await addDoc(collection(db, "user", user.uid, "user_transactions"), transaction)
+        window.location.reload();
         console.log("Transaction added successfully!") // Log success
       } catch (error) {
         console.error("Error adding transaction: ", error) // Log error
