@@ -15,7 +15,7 @@ class ProfileDashboard extends HTMLElement {
     this._profileData = {
       name: "",
       role: "",
-      avatar: `https://api.dicebear.com/7.x/micah/svg?seed=${Math.random()}`,
+      avatar: ``,
       email: "",
       location: "",
       company: "",
@@ -39,7 +39,6 @@ class ProfileDashboard extends HTMLElement {
   }
 
   async connectedCallback() {
-    // Adiciona listener para mudanças de autenticação
     auth.onAuthStateChanged(async (user) => {
       if (user) {
         await this.loadProfileData(user.uid);
@@ -53,19 +52,18 @@ class ProfileDashboard extends HTMLElement {
 
   async loadProfileData(userId) {
     try {
-      const userDocRef = doc(db, "user", userId); // Note "users" no plural
+      const userDocRef = doc(db, "user", userId); 
       const userDoc = await getDoc(userDocRef);
 
       if (userDoc.exists()) {
         const userData = userDoc.data();
         this._profileData = {
-          ...this._profileData, // Mantém os valores padrão
-          ...userData,         // Sobrescreve com os dados do Firestore
-          email: userData.email || auth.currentUser?.email || "" // Pega email do auth se não tiver no Firestore
+          ...this._profileData, 
+          ...userData,         
+          email: userData.email || auth.currentUser?.email || "" 
         };
       } else {
         console.log("Documento não encontrado! Usando dados padrão.");
-        // Se não existir no Firestore, pelo menos mostra o email do auth
         this._profileData.email = auth.currentUser?.email || "";
       }
     } catch (error) {
