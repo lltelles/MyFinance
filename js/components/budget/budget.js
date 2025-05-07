@@ -13,7 +13,7 @@ class Budget extends HTMLElement {
       { category: "Moradia", budget: 1200, spent: 900 },
       { category: "Alimentação", budget: 1000, spent: 850 },
       { category: "Transporte", budget: 800, spent: 600 },
-      { category: "Lazer", budget: 600, spent: 700 },
+      { category: "Lazer", budget: 700, spent: 600 },
       { category: "Saúde", budget: 400, spent: 200 },
     ]
 
