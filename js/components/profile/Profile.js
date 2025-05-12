@@ -71,6 +71,7 @@ class ProfileDashboard extends HTMLElement {
     } catch (error) {
       console.error("Erro ao carregar perfil:", error);
       this._profileData.email = "Erro ao carregar perfil";
+      console.log(userId)
     }
     this.render
   }
@@ -118,7 +119,7 @@ class ProfileDashboard extends HTMLElement {
       logoutBtn.innerHTML = `Sair`;
       logoutBtn.addEventListener("click", async () => {
         await signOut(auth);
-        window.location.reload();
+        window.location.href= 'login.html';
       });
       headerContainer.appendChild(logoutBtn);
     }
