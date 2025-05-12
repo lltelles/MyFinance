@@ -6,45 +6,51 @@ class FinancialSummaryCard extends HTMLElement {
     super();
     this.attachShadow({ mode: "open" });
     this._totalIncome = 0;
-    this._totalExpense = 0;
+    this._totalExpanse = 0;
     this._balance = 0;
+
+    const linkElem = document.createElement("link")
+    linkElem.setAttribute("rel", "stylesheet")
+    linkElem.setAttribute("href", "financial-summary-card.css")
+
+    this.shadowRoot.appendChild(linkElem)
     this.render();
   }
 
   async CalculateBalance(userId) {
     try {
-      
+
       // 1. Referência à subcoleção de transações do usuário
       const transactionsRef = collection(db, "user", userId, "user_transactions");
 
       // 2. Criar query para buscar as transações
-      const q = query( transactionsRef,
+      const q = query(transactionsRef,
         or(
-          where ("transaction_type", "==", "expense"),
-          where ("transaction_type", "==", "income")
-        ) 
+          where("transaction_type", "==", "expense"),
+          where("transaction_type", "==", "income")
+        )
       );
 
       const querySnapshot = await getDocs(q);
-      
+
       this._totalIncome = 0;
       this._totalExpanse = 0;
 
       querySnapshot.forEach((doc) => {
         const data = doc.data();
         const amount = Number(data.value) || 0;
-        
-        if(data.transaction_type == "income") {
+
+        if (data.transaction_type == "income") {
           this._totalIncome += amount;
         } else if (data.transaction_type == "expense") {
           this._totalExpanse += amount;
         }
       });
-      
+
       this._balance = this._totalIncome - this._totalExpanse;
-      
+
       return this._balance;
-      
+
     } catch (error) {
       console.error("Erro ao carregar transações:", error);
       return 0;
