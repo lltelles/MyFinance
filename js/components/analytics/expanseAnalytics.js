@@ -1,3 +1,6 @@
+import { db, auth } from "../../app.js";
+import { collection, query, getDocs, or, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
 class ExpenseAnalytics extends HTMLElement {
   constructor() {
     super()

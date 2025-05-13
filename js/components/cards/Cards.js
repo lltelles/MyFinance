@@ -86,7 +86,7 @@ class FinancialSummaryCard extends HTMLElement {
       },
       savings: {
         title: "Economias",
-        value: 2180.0,
+        value:  0,
         color: "#22c55e",
         icon: "💸",
       },
