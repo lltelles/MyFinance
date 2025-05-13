@@ -1,3 +1,6 @@
+import { db, auth } from "../../app.js";
+import { collection, query, getDocs, or, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
 class MainCategories extends HTMLElement {
   constructor() {
     super()
@@ -120,9 +123,10 @@ class MainCategories extends HTMLElement {
     return this._categories
   }
 
-  connectedCallback() {
-    this.render()
+  async connectedCallback() {
+    this.render();
   }
+
 }
 
 customElements.define("main-categories", MainCategories)

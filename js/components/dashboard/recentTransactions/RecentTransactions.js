@@ -1,13 +1,5 @@
 import { db, auth } from "../../../app.js";
-import {
-  collection,
-  doc,
-  query,
-  where,
-  getDocs,
-  orderBy,
-  limit
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { collection, query, getDocs, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 class RecentTransactions extends HTMLElement {
   constructor() {
@@ -158,7 +150,6 @@ class RecentTransactions extends HTMLElement {
     auth.onAuthStateChanged(async (user) => {
       if (user) {
         await this.getTransactions(user.uid);
-        this.renderLogoutButton();
       } else {
         console.log("Usuário não autenticado");
       }
