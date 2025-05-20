@@ -8,6 +8,7 @@ class FinancialSummaryCard extends HTMLElement {
     this._totalIncome = 0;
     this._totalExpanse = 0;
     this._balance = 0;
+    this.loading = true; // Adicionado para controle de loading
 
     const linkElem = document.createElement("link")
     linkElem.setAttribute("rel", "stylesheet")
@@ -19,10 +20,8 @@ class FinancialSummaryCard extends HTMLElement {
 
   async CalculateBalance(userId) {
     try {
-
       // 1. Referência à subcoleção de transações do usuário
       const transactionsRef = collection(db, "user", userId, "user_transactions");
-
       // 2. Criar query para buscar as transações
       const q = query(transactionsRef,
         or(
@@ -30,27 +29,26 @@ class FinancialSummaryCard extends HTMLElement {
           where("transaction_type", "==", "income")
         )
       );
-
       const querySnapshot = await getDocs(q);
-
       this._totalIncome = 0;
       this._totalExpanse = 0;
-
       querySnapshot.forEach((doc) => {
         const data = doc.data();
         const amount = Number(data.value) || 0;
-
         if (data.transaction_type == "income") {
           this._totalIncome += amount;
         } else if (data.transaction_type == "expense") {
           this._totalExpanse += amount;
         }
       });
-
       this._balance = this._totalIncome - this._totalExpanse;
-
+      const cacheData = {
+        totalIncome: this._totalIncome,
+        totalExpanse: this._totalExpanse,
+        balance: this._balance
+      };
+      localStorage.setItem("financialSummaryCard", JSON.stringify(cacheData));
       return this._balance;
-
     } catch (error) {
       console.error("Erro ao carregar transações:", error);
       return 0;
@@ -102,14 +100,26 @@ class FinancialSummaryCard extends HTMLElement {
     const card = document.createElement("div")
     card.className = "summary-card"
 
-    card.innerHTML = `
-    <link rel="stylesheet" href="/css/components/cards.css">
-      <div class="card-content">
-        <div class="card-title">${data.title}</div>
-        <div class="card-value" style="color: ${data.color}">${this.formatCurrency(data.value)}</div>
-      </div>
-      <div class="card-icon" style="color: ${data.color}">${data.icon}</div>
-    `
+    if (this.loading) {
+      // Skeleton loader
+      card.innerHTML = `
+        <link rel="stylesheet" href="/css/components/cards.css">
+        <div class="card-content">
+          <div class="card-title skeleton-title"></div>
+          <div class="card-value skeleton-value"></div>
+        </div>
+        <div class="card-icon skeleton-icon"></div>
+      `
+    } else {
+      card.innerHTML = `
+        <link rel="stylesheet" href="/css/components/cards.css">
+        <div class="card-content">
+          <div class="card-title">${data.title}</div>
+          <div class="card-value" style="color: ${data.color}">${this.formatCurrency(data.value)}</div>
+        </div>
+        <div class="card-icon" style="color: ${data.color}">${data.icon}</div>
+      `
+    }
 
     while (this.shadowRoot.firstChild) {
       this.shadowRoot.removeChild(this.shadowRoot.firstChild)
@@ -145,12 +155,28 @@ class FinancialSummaryCard extends HTMLElement {
   }
 
   async connectedCallback() {
+    // Carrega do cache primeiro, se disponível
+    const cached = localStorage.getItem("financialSummaryCard");
+    if (cached) {
+      try {
+        const data = JSON.parse(cached);
+        this._totalIncome = data.totalIncome || 0;
+        this._totalExpanse = data.totalExpanse || 0;
+        this._balance = data.balance || 0;
+        console.log("[FinancialSummaryCard] Loaded card data from cache:", data);
+      } catch (e) {
+        // Se falhar, ignora e segue normalmente
+      }
+    }
+    this.loading = true;
+    this.render();
     auth.onAuthStateChanged(async (user) => {
       if (user) {
         await this.CalculateBalance(user.uid);
       } else {
         console.log("Usuário não autenticado");
       }
+      this.loading = false;
       this.render();
     });
   }
