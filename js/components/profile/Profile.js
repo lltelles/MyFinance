@@ -1,3 +1,7 @@
+import { db, auth } from "../../app.js";
+import { getDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
 class ProfileDashboard extends HTMLElement {
   constructor() {
     super()
@@ -10,13 +14,13 @@ class ProfileDashboard extends HTMLElement {
     this.shadowRoot.appendChild(linkElem)
 
     this._profileData = {
-      name: "Ana Silva",
-      role: "Desenvolvedora Full Stack",
-      avatar: "https://via.placeholder.com/128",
-      email: "ana.silva@email.com",
-      location: "São Paulo, Brasil",
-      company: "TechCorp Brasil",
-      education: "Universidade de São Paulo",
+      name: "",
+      role: "",
+      avatar: ``,
+      email: "",
+      location: "",
+      company: "",
+      education: "",
       skills: [
         { name: "Desenvolvimento Frontend", value: 85, max: 100 },
         { name: "Desenvolvimento Backend", value: 75, max: 100 },
@@ -35,12 +39,95 @@ class ProfileDashboard extends HTMLElement {
     this.render()
   }
 
+  async connectedCallback() {
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        await this.loadProfileData(user.uid);
+        this.renderLogoutButton(); 
+      } else {
+        console.log("Usuário não autenticado");
+        this._profileData.email = "Faça login para ver seu perfil";
+      }
+      this.render();
+    });
+  }
+
+  async loadProfileData(userId) {
+    try {
+      const userDocRef = doc(db, "user", userId); 
+      const userDoc = await getDoc(userDocRef);
+
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        this._profileData = {
+          ...this._profileData, 
+          ...userData,         
+          email: userData.email || auth.currentUser?.email || "" 
+        };
+      } else {
+        console.log("Documento não encontrado! Usando dados padrão.");
+        this._profileData.email = auth.currentUser?.email || "";
+      }
+    } catch (error) {
+      console.error("Erro ao carregar perfil:", error);
+      this._profileData.email = "Erro ao carregar perfil";
+      console.log(userId)
+    }
+    this.render
+  }
+
+  renderLogoutButton() {
+    const logoutBtn = document.createElement("button");
+    logoutBtn.className = "logout-button";
+    logoutBtn.innerHTML = `
+      <span class="logout-icon"></span>
+      <span>Sair</span>
+    `;
+    
+    logoutBtn.addEventListener("click", async () => {
+      try {
+        await signOut(auth);
+        console.log("Usuário deslogado com sucesso");
+        // Você pode adicionar redirecionamento ou atualização da UI aqui
+        window.location.href = './login.html'; // Recarrega a página após logout
+      } catch (error) {
+        console.error("Erro ao fazer logout:", error);
+      }
+    });
+
+    // Adiciona o botão ao shadowRoot
+    if (this.shadowRoot) {
+      const existingBtn = this.shadowRoot.querySelector(".logout-button");
+      if (existingBtn) {
+        existingBtn.remove();
+      }
+      this.shadowRoot.appendChild(logoutBtn);
+    }
+  }
+
   render() {
+
     const container = document.createElement("div")
     container.className = "profile-dashboard"
 
+    const headerContainer = document.createElement("div");
+    headerContainer.className = "profile-header";
+
+    if (auth.currentUser) {
+      const logoutBtn = document.createElement("button");
+      logoutBtn.className = "logout-button";
+      logoutBtn.innerHTML = `Sair`;
+      logoutBtn.addEventListener("click", async () => {
+        await signOut(auth);
+        window.location.href= 'login.html';
+      });
+      headerContainer.appendChild(logoutBtn);
+    }
+
     const tabsNav = document.createElement("div")
     tabsNav.className = "tabs-nav"
+
+    container.appendChild(headerContainer);
 
     const tabs = [
       { id: "info", label: "Informações", icon: "user" },
@@ -219,9 +306,7 @@ class ProfileDashboard extends HTMLElement {
     return this._activeTab
   }
 
-  connectedCallback() {
-    this.render()
-  }
+  
 }
 
 customElements.define("profile-dashboard", ProfileDashboard)

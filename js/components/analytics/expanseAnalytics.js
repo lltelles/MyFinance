@@ -1,7 +1,16 @@
+import { db, auth } from "../../app.js";
+import { collection, query, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
 class ExpenseAnalytics extends HTMLElement {
   constructor() {
     super()
     this.attachShadow({ mode: "open" })
+
+    this._colorPalette = [
+      "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF",
+      "#FF9F40", "#8AC24A", "#F06292", "#7986CB", "#4DB6AC",
+      "#FF8A65", "#A1887F"
+    ];
 
     const linkElem = document.createElement("link")
     linkElem.setAttribute("rel", "stylesheet")
@@ -10,17 +19,47 @@ class ExpenseAnalytics extends HTMLElement {
     this.shadowRoot.appendChild(linkElem)
 
     this._categories = [
-      { name: "Moradia", value: 1200, color: "#a6ce39" },
-      { name: "Alimentação", value: 1000, color: "#ff8c42" },
-      { name: "Transporte", value: 800, color: "#1e90ff" },
-      { name: "Lazer", value: 600, color: "#ffcc00" },
-      { name: "Saúde", value: 400, color: "#00b894" },
-      { name: "Outros", value: 220, color: "#ff7043" },
+      { name: "", value: 0, color: "#a6ce39" },
     ]
 
     this._chart = null
+    this.loading = false;
 
     this.loadChartJS()
+  }
+
+  async CalculateAnalytics(userId) {
+    try {
+      const transactionsRef = collection(db, "user", userId, "user_transactions");
+      const q = query(transactionsRef);
+      const querySnapshot = await getDocs(q);
+
+      // Objeto para acumular gastos por categoria
+      let spendingByCategory = {};
+
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+
+        if (data.transaction_type === 'expense') {
+          // Acumula gastos por categoria
+          spendingByCategory[data.category] =
+            (spendingByCategory[data.category] || 0) + data.value;
+        }
+
+      });
+
+      // Transforma em array no formato esperado pelo componente
+      this._categories = Object.keys(spendingByCategory).map((category, index) => ({
+        name: category,
+        value: spendingByCategory[category],
+        color: this._colorPalette[index % this._colorPalette.length]
+      }));
+
+      // Salva no cache
+      localStorage.setItem("expenseAnalyticsCategories", JSON.stringify(this._categories));
+    } catch (error) {
+      console.error("Erro ao carregar transações:", error);
+    }
   }
 
   loadChartJS() {
@@ -79,6 +118,37 @@ class ExpenseAnalytics extends HTMLElement {
       this.renderError("Chart.js is required for this component")
       return
     }
+    if (this.loading) {
+      // Skeleton loader for analytics
+      const container = document.createElement("div")
+      container.className = "analytics-card"
+      container.innerHTML = `
+        <link rel="stylesheet" href="/css/components/expanseAnalytics.css">
+        <div class="card-header">
+          <h3 class="skeleton-analytics-title"></h3>
+          <p class="skeleton-analytics-subtitle"></p>
+        </div>
+        <div class="card-content">
+          <div class="chart-container">
+            <div class="skeleton-analytics-chart"></div>
+          </div>
+          <div class="legend-container">
+            <div class="skeleton-analytics-legend"></div>
+            <div class="skeleton-analytics-legend"></div>
+            <div class="skeleton-analytics-legend"></div>
+          </div>
+        </div>
+      `
+      while (this.shadowRoot.firstChild) {
+        this.shadowRoot.removeChild(this.shadowRoot.firstChild)
+      }
+      const linkElem = document.createElement("link")
+      linkElem.setAttribute("rel", "stylesheet")
+      linkElem.setAttribute("href", "expense-analytics.css")
+      this.shadowRoot.appendChild(linkElem)
+      this.shadowRoot.appendChild(container)
+      return
+    }
 
     const container = document.createElement("div")
     container.className = "analytics-card"
@@ -95,8 +165,8 @@ class ExpenseAnalytics extends HTMLElement {
         </div>
         <div class="legend-container">
           ${this.calculatePercentages()
-            .map(
-              (category) => `
+        .map(
+          (category) => `
             <div class="legend-item">
               <div class="color-indicator" style="background-color: ${category.color}"></div>
               <div class="legend-text">
@@ -106,8 +176,8 @@ class ExpenseAnalytics extends HTMLElement {
               <div class="percentage">${category.percentage}%</div>
             </div>
           `,
-            )
-            .join("")}
+        )
+        .join("")}
         </div>
       </div>
     `
@@ -181,18 +251,9 @@ class ExpenseAnalytics extends HTMLElement {
       // Ensure each category has a color
       this._categories = data.map((category, index) => {
         const defaultColors = [
-          "#a6ce39",
-          "#ff8c42",
-          "#1e90ff",
-          "#ffcc00",
-          "#00b894",
-          "#ff7043",
-          "#9b59b6",
-          "#3498db",
-          "#e74c3c",
-          "#2ecc71",
-          "#f1c40f",
-          "#1abc9c",
+          "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF",
+          "#FF9F40", "#8AC24A", "#F06292", "#7986CB", "#4DB6AC",
+          "#FF8A65", "#A1887F"
         ]
 
         return {
@@ -210,8 +271,31 @@ class ExpenseAnalytics extends HTMLElement {
     return this._categories
   }
 
-  connectedCallback() {
-    this.render()
+  async connectedCallback() {
+    // Carrega do cache primeiro, se disponível
+    const cached = localStorage.getItem("expenseAnalyticsCategories");
+    if (cached) {
+      try {
+        const data = JSON.parse(cached);
+        if (Array.isArray(data)) {
+          this._categories = data;
+          console.log("[ExpenseAnalytics] Loaded categories from cache:", data);
+        }
+      } catch (e) {
+        // Se falhar, ignora e segue normalmente
+      }
+    }
+    this.loading = true;
+    this.render();
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        await this.CalculateAnalytics(user.uid);
+      } else {
+        console.log("Usuário não autenticado");
+      }
+      this.loading = false;
+      this.render();
+    });
   }
 
   disconnectedCallback() {

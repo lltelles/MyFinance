@@ -43,3 +43,40 @@
     max-width: 100%;
   }
 }
+
+/* Skeleton styles for FinancialSummaryCard - styled to match card content */
+.skeleton-title {
+  width: 80px;
+  height: 18px;
+  background: linear-gradient(90deg, #ececec 25%, #e0e0e0 50%, #ececec 75%);
+  border-radius: 4px;
+  margin-bottom: 8px;
+  animation: skeleton-loading 2s infinite linear;
+}
+.skeleton-value {
+  width: 120px;
+  height: 24px;
+  background: linear-gradient(90deg, #ececec 25%, #e0e0e0 50%, #ececec 75%);
+  border-radius: 6px;
+  margin-bottom: 0;
+  animation: skeleton-loading 2s infinite linear;
+}
+.skeleton-icon {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(90deg, #ececec 25%, #e0e0e0 50%, #ececec 75%);
+  border-radius: 50%;
+  margin: 0 0 0 16px;
+  animation: skeleton-loading 3s infinite linear;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+@keyframes skeleton-loading {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
