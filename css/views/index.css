@@ -114,4 +114,27 @@ header.rolagem ul li a {
 .banner h1 span {
   color: #ffffff;
 }
+
+.sobre-nos-container{
+  display: flex;
+  height: 100vh;
+  background-color:#ffffff;
+ 
+  
+}
+.sobre{
+  background-color: #ffffff;
+  height: 20vh;
+  width: 14vw;
+  display: flex;
+  justify-content: space-between;
+  margin: auto;
+  border: 2px solid #000000;
+
+}
+
+.rodape{
+  height: 20vh;
+  background-color:#666666 ;
+}
   
