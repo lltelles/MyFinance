@@ -23,6 +23,7 @@ class ExpenseAnalytics extends HTMLElement {
     ]
 
     this._chart = null
+    this.loading = false;
 
     this.loadChartJS()
   }
@@ -54,6 +55,8 @@ class ExpenseAnalytics extends HTMLElement {
         color: this._colorPalette[index % this._colorPalette.length]
       }));
 
+      // Salva no cache
+      localStorage.setItem("expenseAnalyticsCategories", JSON.stringify(this._categories));
     } catch (error) {
       console.error("Erro ao carregar transações:", error);
     }
@@ -113,6 +116,37 @@ class ExpenseAnalytics extends HTMLElement {
   render() {
     if (!window.Chart) {
       this.renderError("Chart.js is required for this component")
+      return
+    }
+    if (this.loading) {
+      // Skeleton loader for analytics
+      const container = document.createElement("div")
+      container.className = "analytics-card"
+      container.innerHTML = `
+        <link rel="stylesheet" href="/css/components/expanseAnalytics.css">
+        <div class="card-header">
+          <h3 class="skeleton-analytics-title"></h3>
+          <p class="skeleton-analytics-subtitle"></p>
+        </div>
+        <div class="card-content">
+          <div class="chart-container">
+            <div class="skeleton-analytics-chart"></div>
+          </div>
+          <div class="legend-container">
+            <div class="skeleton-analytics-legend"></div>
+            <div class="skeleton-analytics-legend"></div>
+            <div class="skeleton-analytics-legend"></div>
+          </div>
+        </div>
+      `
+      while (this.shadowRoot.firstChild) {
+        this.shadowRoot.removeChild(this.shadowRoot.firstChild)
+      }
+      const linkElem = document.createElement("link")
+      linkElem.setAttribute("rel", "stylesheet")
+      linkElem.setAttribute("href", "expense-analytics.css")
+      this.shadowRoot.appendChild(linkElem)
+      this.shadowRoot.appendChild(container)
       return
     }
 
@@ -238,12 +272,28 @@ class ExpenseAnalytics extends HTMLElement {
   }
 
   async connectedCallback() {
+    // Carrega do cache primeiro, se disponível
+    const cached = localStorage.getItem("expenseAnalyticsCategories");
+    if (cached) {
+      try {
+        const data = JSON.parse(cached);
+        if (Array.isArray(data)) {
+          this._categories = data;
+          console.log("[ExpenseAnalytics] Loaded categories from cache:", data);
+        }
+      } catch (e) {
+        // Se falhar, ignora e segue normalmente
+      }
+    }
+    this.loading = true;
+    this.render();
     auth.onAuthStateChanged(async (user) => {
       if (user) {
         await this.CalculateAnalytics(user.uid);
       } else {
         console.log("Usuário não autenticado");
       }
+      this.loading = false;
       this.render();
     });
   }

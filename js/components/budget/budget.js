@@ -24,13 +24,8 @@ class Budget extends HTMLElement {
       const transactionsRef = collection(db, "user", userId, "user_transactions");
       const q = query(transactionsRef);
       const querySnapshot = await getDocs(q);
-
-      // Objeto para acumular gastos por categoria
       let spendingByCategory = {};
-
-      // Objeto para armazenar orçamentos definidos
       let budgetsByCategory = {};
-
       const defaultBudgets = {
         'alimentacao': 800,
         'transporte': 500,
@@ -40,28 +35,23 @@ class Budget extends HTMLElement {
         'educacao': 600,
         'outros': 200
       };
-
       querySnapshot.forEach((doc) => {
         const data = doc.data();
-
         if (data.transaction_type === 'expense') {
-          // Acumula gastos por categoria
           spendingByCategory[data.category] =
             (spendingByCategory[data.category] || 0) + data.value;
         }
-
         if (data.budget) {
           budgetsByCategory[data.category] = data.budget;
         }
       });
-
-      // Transforma em array no formato esperado pelo componente
       this._budgetItems = Object.keys(spendingByCategory).map(category => ({
         category: category,
         spent: spendingByCategory[category],
-        budget: budgetsByCategory[category] || defaultBudgets[category] || 1200 // Assume 1200 se não tiver orçamento definido
+        budget: budgetsByCategory[category] || defaultBudgets[category] || 1200
       }));
-
+      // Salva no cache
+      localStorage.setItem("budgetData", JSON.stringify(this._budgetItems));
     } catch (error) {
       console.error("Erro ao carregar transações:", error);
     }
@@ -115,6 +105,34 @@ class Budget extends HTMLElement {
   }
 
   render() {
+    if (this.loading) {
+      const container = document.createElement("div")
+      container.className = "budget-card"
+      container.innerHTML = `
+        <link rel="stylesheet" href="/css/components/budget.css">
+        <div class="card-header">
+          <h3 class="skeleton-budget-title"></h3>
+          <p class="skeleton-budget-subtitle"></p>
+        </div>
+        <div class="card-content">
+          <div class="skeleton-budget-row"></div>
+          <div class="skeleton-budget-row"></div>
+          <div class="skeleton-budget-row"></div>
+          <div class="skeleton-budget-row"></div>
+          <div class="skeleton-budget-row"></div>
+        </div>
+      `
+      while (this.shadowRoot.firstChild) {
+        this.shadowRoot.removeChild(this.shadowRoot.firstChild)
+      }
+      const linkElem = document.createElement("link")
+      linkElem.setAttribute("rel", "stylesheet")
+      linkElem.setAttribute("href", "budget-view.css")
+      this.shadowRoot.appendChild(linkElem)
+      this.shadowRoot.appendChild(container)
+      return
+    }
+
     const container = document.createElement("div")
     container.className = "budget-card"
 
@@ -202,12 +220,28 @@ class Budget extends HTMLElement {
   }
 
   async connectedCallback() {
+    // Carrega do cache primeiro, se disponível
+    const cached = localStorage.getItem("budgetData");
+    if (cached) {
+      try {
+        const data = JSON.parse(cached);
+        if (Array.isArray(data)) {
+          this._budgetItems = data;
+          console.log("[Budget] Loaded budget items from cache:", data);
+        }
+      } catch (e) {
+        // Se falhar, ignora e segue normalmente
+      }
+    }
+    this.loading = true;
+    this.render();
     auth.onAuthStateChanged(async (user) => {
       if (user) {
         await this.CalculateBudget(user.uid);
       } else {
         console.log("Usuário não autenticado");
       }
+      this.loading = false;
       this.render();
     });
   }

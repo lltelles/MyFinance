@@ -84,6 +84,40 @@
   text-align: right;
 }
 
+/* Skeleton styles for MainCategories - match card skeleton colors */
+.skeleton-main-title {
+  width: 140px;
+  height: 18px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  border-radius: 4px;
+  margin-bottom: 8px;
+  animation: skeleton-loading 2s infinite linear;
+}
+.skeleton-main-subtitle {
+  width: 180px;
+  height: 14px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  border-radius: 4px;
+  margin-bottom: 16px;
+  animation: skeleton-loading 2s infinite linear;
+}
+.skeleton-main-row {
+  width: 95%;
+  height: 32px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  border-radius: 8px;
+  margin: 10px 0;
+  animation: skeleton-loading 2s infinite linear;
+}
+@keyframes skeleton-loading {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
 @media (max-width: 768px) {
   .categories-card {
     max-width: 100%;

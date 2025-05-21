@@ -28,27 +28,22 @@ class MainCategories extends HTMLElement {
       const transactionsRef = collection(db, "user", userId, "user_transactions");
       const q = query(transactionsRef);
       const querySnapshot = await getDocs(q);
-
       // Objeto para acumular gastos por categoria
       let spendingByCategory = {};
-
       querySnapshot.forEach((doc) => {
         const data = doc.data();
-
         if (data.transaction_type === 'expense') {
-          // Acumula gastos por categoria
           spendingByCategory[data.category] =
             (spendingByCategory[data.category] || 0) + data.value;
         }
-
       });
-
       this._categories = Object.keys(spendingByCategory).map((category, index) => ({
         name: category,
         value: spendingByCategory[category],
         color: this._colorPalette[index % this._colorPalette.length]
       }));
-
+      // Salva no cache
+      localStorage.setItem("mainCategoriesData", JSON.stringify(this._categories));
     } catch (error) {
       console.error("Erro ao carregar transações:", error);
     }
@@ -84,6 +79,34 @@ class MainCategories extends HTMLElement {
   }
 
   render() {
+    if (this.loading) {
+      const container = document.createElement("div")
+      container.className = "categories-card"
+      container.innerHTML = `
+        <link rel="stylesheet" href="/css/components/mainCategories.css">
+        <div class="card-header">
+          <h3 class="skeleton-main-title"></h3>
+          <p class="skeleton-main-subtitle"></p>
+        </div>
+        <div class="card-content">
+          <div class="skeleton-main-row"></div>
+          <div class="skeleton-main-row"></div>
+          <div class="skeleton-main-row"></div>
+          <div class="skeleton-main-row"></div>
+          <div class="skeleton-main-row"></div>
+        </div>
+      `
+      while (this.shadowRoot.firstChild) {
+        this.shadowRoot.removeChild(this.shadowRoot.firstChild)
+      }
+      const linkElem = document.createElement("link")
+      linkElem.setAttribute("rel", "stylesheet")
+      linkElem.setAttribute("href", "main-categories.css")
+      this.shadowRoot.appendChild(linkElem)
+      this.shadowRoot.appendChild(container)
+      return
+    }
+
     const container = document.createElement("div")
     container.className = "categories-card"
 
@@ -146,12 +169,28 @@ class MainCategories extends HTMLElement {
   }
 
   async connectedCallback() {
+    // Carrega do cache primeiro, se disponível
+    const cached = localStorage.getItem("mainCategoriesData");
+    if (cached) {
+      try {
+        const data = JSON.parse(cached);
+        if (Array.isArray(data)) {
+          this._categories = data;
+          console.log("[MainCategories] Loaded categories from cache:", data);
+        }
+      } catch (e) {
+        // Se falhar, ignora e segue normalmente
+      }
+    }
+    this.loading = true;
+    this.render();
     auth.onAuthStateChanged(async (user) => {
       if (user) {
         await this.CalculateAnalytics(user.uid);
       } else {
         console.log("Usuário não autenticado");
       }
+      this.loading = false;
       this.render();
     });
   }
