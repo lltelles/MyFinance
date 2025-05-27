@@ -66,8 +66,7 @@
 
 .sidebar-footer {
   padding: 1rem;
-  border-top: 1px solid #ddd;
-  border: 1px solid red;
+  height: 100%;
 }
 
 .logout-button {
