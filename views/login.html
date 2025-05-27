@@ -12,110 +12,115 @@
 </head>
 
 <body>
-</head>
-<body>
- <div class="wrapper">
-    <nav class="nav">
-        <div class="nav-logo">
-            <p>MYFINANCE. </p>
-        </div>
-        <div class="nav-menu" id="navMenu">
-            <ul>
-                <li><a href="../views/index.html" class="link ">HOME</a></li>
-                <li><a href="#" class="link">SOBRE NÓS</a></li>
-                <li><a href="#" class="link">FALE CONOSCO</a></li>
-            </ul>
-        </div>
-        <div class="nav-button">
-            <button class="btn white-btn" id="loginBtn" onclick="login()">Login</button>
-            <button class="btn" id="registerBtn" onclick="register()">Cadastro</button>
-        </div>
-        <div class="nav-menu-btn">
-            <i class="bx bx-menu" onclick="myMenuFunction()"></i>
-        </div>
-    </nav>
-    <div class="form-box">
-        <!------------------- formulario de login  -------------------------->
-        
-        <div class="login-container" id="login">
-            <div class="top">
-                <span>Não possui uma conta? <a href="#" onclick="register()">Cadastrar</a></span>
-                <header>Login</header>
-            </div>
-            <form id="loginForm">
-            <div class="input-box">
-                <input type="text" class="input-field" placeholder="Email" id="email">
-                <i class="bx bx-user"></i>
-            </div>
-            <div class="input-box">
-                <input type="password" class="input-field" placeholder="Senha" id="password">
-                <i class="bx bx-lock-alt"></i>
-            </div>
-            <div class="input-box">
-                <button type="submit" class="submit" value="Entrar">
-                    <p>Entrar</p>
-            </div>
-            <div class="two-col">
-                <div class="one">
-                    <input type="checkbox" id="login-check">
-                    <label for="login-check"> Lembrar da senha</label>
-                </div>
-                <div class="two">
-                    <label><a href="recsenha.html">Esqueceu da senha?</a></label>
-                </div>
-            </div>
-            </form>
-        </div>
-        <!------------------- formulario de registro  -------------------------->
-        <div class="register-container" id="register">
-            <div class="top">
-                <span>Ja possui uma conta? <a href="#" onclick="login()">Login</a></span>
-                <header>Cadastro</header>
-            </div>
-            <div class="two-forms">
-                <div class="input-box">
-                    <input type="text" class="input-field" placeholder="Nome">
-                    <i class="bx bx-user"></i>
-                </div>
-                <div class="input-box">
-                    <input type="text" class="input-field" placeholder="Sobrenome">
-                    <i class="bx bx-user"></i>
-                </div>
-            </div>
-            <div class="input-box">
-                <input type="text" class="input-field" placeholder="Email">
-                <i class="bx bx-envelope"></i>
-            </div>
-            <div class="input-box">
-                <input type="password" class="input-field" placeholder="Senha">
-                <i class="bx bx-lock-alt"></i>
-            </div>
-            <div class="input-box">
-                <input type="password" class="input-field" placeholder="Confirme sua senha">
-                <i class="bx bx-lock-alt"></i>
-            </div>
-            <div class="input-box">
-                <button type="submit" class="submit" value="Confirmar">
-                <p>Confirmar</p>
-            </div>
-        </form>
-            <div class="two-col">
-                <div class="one">
-                    <input type="checkbox" id="register-check">
-                    <label for="register-check">Lembrar da senha</label>
-                </div>
-                <div class="two">
-                    <label><a href="#">Terms & conditions</a></label>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>   
+    </head>
 
-<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    <body>
+        <div class="wrapper">
+            <nav class="nav">
+                <div class="nav-logo">
+                    <p>MYFINANCE. </p>
+                </div>
+                <div class="nav-menu" id="navMenu">
+                    <ul>
+                        <li><a href="../views/index.html" class="link ">HOME</a></li>
+                        <li><a href="#" class="link">SOBRE NÓS</a></li>
+                        <li><a href="#" class="link">FALE CONOSCO</a></li>
+                    </ul>
+                </div>
+                <div class="nav-button">
+                    <button class="btn white-btn" id="loginBtn" onclick="login()">Login</button>
+                    <button class="btn" id="registerBtn" onclick="register()">Cadastro</button>
+                </div>
+                <div class="nav-menu-btn">
+                    <i class="bx bx-menu" onclick="myMenuFunction()"></i>
+                </div>
+            </nav>
+            <div class="form-box">
+                <!------------------- formulario de login  -------------------------->
 
-<script src="../js/views/login.js" rel="js"></script>
-</body>
+                <div class="login-container" id="login">
+                    <div class="top">
+                        <span>Não possui uma conta? <a href="#" onclick="register()">Cadastrar</a></span>
+                        <header>Login</header>
+                    </div>
+                    <form id="loginForm">
+                        <div class="input-box">
+                            <input type="text" class="input-field" placeholder="Email" id="email">
+                            <i class="bx bx-user"></i>
+                        </div>
+                        <div class="input-box">
+                            <input type="password" class="input-field" placeholder="Senha" id="password">
+                            <i class="bx bx-lock-alt"></i>
+                        </div>
+                        <div class="input-box">
+                            <button type="submit" class="submit" value="Entrar">
+                                <p>Entrar</p>
+                        </div>
+                        <div class="two-col">
+                            <div class="one">
+                                <input type="checkbox" id="login-check">
+                                <label for="login-check"> Lembrar da senha</label>
+                            </div>
+                            <div class="two">
+                                <label><a href="recsenha.html">Esqueceu da senha?</a></label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!------------------- formulario de registro  -------------------------->
+                <div class="register-container" id="register">
+                    <div class="top">
+                        <span>Ja possui uma conta? <a href="#" onclick="login()">Login</a></span>
+                        <header>Cadastro</header>
+                    </div>
+                    <form id="registerForm">
+                        <div class="two-forms">
+                            <div class="input-box">
+                                <input type="text" class="input-field" placeholder="Nome" name="name">
+                                <i class="bx bx-user"></i>
+                            </div>
+                            <div class="input-box">
+                                <input type="text" class="input-field" placeholder="Sobrenome" name="last_name">
+                                <i class="bx bx-user"></i>
+                            </div>
+                        </div>
+                        <div class="input-box">
+                            <input type="text" class="input-field" placeholder="Email" name="email">
+                            <i class="bx bx-envelope"></i>
+                        </div>
+                        <div class="input-box">
+                            <input type="password" class="input-field" placeholder="Senha" name="senha">
+                            <i class="bx bx-lock-alt"></i>
+                        </div>
+                        <div class="input-box">
+                            <input type="password" class="input-field" placeholder="Confirme sua senha"
+                                name="confirmacaoSenha">
+                            <i class="bx bx-lock-alt"></i>
+                        </div>
+                        <div class="input-box">
+                            <button type="submit" class="submit">
+                                <p>Confirmar</p>
+                            </button>
+                        </div>
+                    </form>
+                    <div class="two-col">
+                        <div class="one">
+                            <input type="checkbox" id="register-check">
+                            <label for="register-check">Lembrar da senha</label>
+                        </div>
+                        <div class="two">
+                            <label><a href="#">Terms & conditions</a></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="module" src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+        <script type="module" src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+        <script type="module" src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>>
+
+        <script src="../js/views/login.js" rel="js"></script>
+    </body>
+
 </html>

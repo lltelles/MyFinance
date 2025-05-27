@@ -52,51 +52,63 @@
 
     <!-- Adicione o SDK do Firebase -->
     <script type="module">
-        import { auth } from "../js/app.js";
-        import { sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { auth } from "../js/app.js";
+    import { sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    
+    document.getElementById('recoverForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
         
-        document.getElementById('recoverForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('recoverEmail').value.trim();
-            const messageElement = document.getElementById('recoverMessage');
-            
-            if (!email) {
-                showMessage(messageElement, 'Por favor, insira seu e-mail', 'error');
-                return;
-            }
-            
-            try {
-                await sendPasswordResetEmail(auth, email);
-                showMessage(messageElement, 'E-mail de recuperação enviado com sucesso! Verifique sua caixa de entrada.', 'success');
-            } catch (error) {
-                console.error('Erro ao enviar e-mail de recuperação:', error);
-                let errorMessage = 'Erro ao enviar e-mail de recuperação';
-                
-                switch(error.code) {
-                    case 'auth/user-not-found':
-                        errorMessage = 'Nenhum usuário encontrado com este e-mail';
-                        break;
-                    case 'auth/invalid-email':
-                        errorMessage = 'E-mail inválido';
-                        break;
-                    case 'auth/too-many-requests':
-                        errorMessage = 'Muitas tentativas. Tente novamente mais tarde';
-                        break;
-                }
-                
-                showMessage(messageElement, errorMessage, 'error');
-            }
-        });
+        const email = document.getElementById('recoverEmail').value.trim();
+        const messageElement = document.getElementById('recoverMessage');
         
-        function showMessage(element, message, type) {
-            element.textContent = message;
-            element.style.display = 'block';
-            element.style.color = type === 'success' ? 'green' : 'red';
-            element.style.marginTop = '15px';
-            element.style.textAlign = 'center';
+        // Validação básica de e-mail
+        if (!email) {
+            showMessage(messageElement, 'Por favor, insira seu e-mail', 'error');
+            return;
         }
-    </script>
+
+        // Validação simples de formato de e-mail
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            showMessage(messageElement, 'Por favor, insira um e-mail válido', 'error');
+            return;
+        }
+        
+        try {
+            // Envia o e-mail de recuperação (o Firebase não revela se o e-mail existe por segurança)
+            await sendPasswordResetEmail(auth, email);
+            showMessage(messageElement, 'Se este e-mail estiver cadastrado, você receberá um link de recuperação. Verifique sua caixa de entrada.', 'success');
+        } catch (error) {
+            console.error('Erro no processo de recuperação:', error);
+            let errorMessage = 'Erro ao processar sua solicitação';
+            
+            switch(error.code) {
+                case 'auth/invalid-email':
+                    errorMessage = 'E-mail inválido';
+                    break;
+                case 'auth/too-many-requests':
+                    errorMessage = 'Muitas tentativas. Tente novamente mais tarde';
+                    break;
+                default:
+                    errorMessage = 'Ocorreu um erro ao enviar o e-mail de recuperação';
+            }
+            
+            showMessage(messageElement, errorMessage, 'error');
+        }
+    });
+    
+    function showMessage(element, message, type) {
+        element.textContent = message;
+        element.style.display = 'block';
+        element.style.color = type === 'success' ? 'green' : 'red';
+        element.style.marginTop = '15px';
+        element.style.textAlign = 'center';
+        
+        // Limpa a mensagem após 5 segundos
+        setTimeout(() => {
+            element.style.display = 'none';
+        }, 5000);
+    }
+</script>
     
     <script src="../js/views/login.js" rel="js"></script>
 </body>
