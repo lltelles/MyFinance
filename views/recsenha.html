@@ -17,7 +17,7 @@
             </div>  
             <div class="nav-menu" id="navMenu">
                 <ul>
-                    <li><a href="index.html" class="link ">HOME</a></li>
+                    <li><a href="/views/index.html" class="link ">HOME</a></li>
                     <li><a href="#" class="link">SOBRE NÓS</a></li>
                     <li><a href="#" class="link">FALE CONOSCO</a></li>
                 </ul>
@@ -34,7 +34,7 @@
             <div class="login-container" id="recover">
                 <div class="top">
                     <header>Recuperação de senha</header>
-                </div>z
+                </div>
                 <form id="recoverForm">
                     <div class="input-box">
                         <input type="email" class="input-field" id="recoverEmail" placeholder="Email" required>
@@ -50,7 +50,13 @@
         </div>
     </div>   
 
-
+    <!-- Adicione o SDK do Firebase -->
+    <script type="module" src="../js/views/recsenha.js"></script>
+    <script type="module">
+        import { setupRecoverForm } from '../js/views/recsenha.js';
+        document.addEventListener('DOMContentLoaded', setupRecoverForm);
+    </script>
+    
     <script src="../js/views/recsenha.js" rel="js"></script>
 </body>
-</html>
+</html> 
