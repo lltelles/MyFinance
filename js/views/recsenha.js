@@ -110,3 +110,22 @@ export function setupRecoverForm() {
 
 // Initialize when imported as a module
 document.addEventListener('DOMContentLoaded', setupRecoverForm);
+
+
+//BOTÃO LOGUIN REDIRECIONAMENTO
+
+// Função para redirecionar para a página de login
+function login() {
+    window.location.href = "/views/login.html";
+}
+
+// Função para redirecionar para a página de cadastro
+function register() {
+    window.location.href = "/MyFinance/views/register.html"; // ajuste se o nome for diferente
+}
+
+// Menu responsivo (se estiver usando ícone bx-menu)
+function myMenuFunction() {
+    const navMenu = document.getElementById("navMenu");
+    navMenu.classList.toggle("active");
+}

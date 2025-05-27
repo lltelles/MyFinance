@@ -72,7 +72,7 @@ class AppSidebar extends HTMLElement {
         `).join('')}
       </div>
       <div class="sidebar-footer">
-        <button class="logout-button">Sair</button>
+        <button class="logout-button" ">Sair</button>
       </div>
     `;
 
@@ -84,7 +84,7 @@ class AppSidebar extends HTMLElement {
     if (auth.currentUser && logoutBtn) {
       logoutBtn.addEventListener("click", async () => {
         await signOut(auth);
-        window.location.href = 'login.html';
+        window.location.href = 'index.html';
       });
     } else if (!auth.currentUser && logoutBtn) {
       logoutBtn.style.display = 'none';
