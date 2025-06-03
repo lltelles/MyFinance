@@ -1,11 +1,4 @@
-import { db, auth } from "../../../app.js";
-import {
-  collection,
-  query,
-  getDocs,
-  orderBy,
-  limit,
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import Cache from "../../cache/cache.js"
 
 class RecentTransactions extends HTMLElement {
   constructor() {
@@ -27,50 +20,19 @@ class RecentTransactions extends HTMLElement {
     }).format(value);
   }
 
-  async getTransactions(userId) {
-    try {
-      this.loading = true;
-      this.render(); // Show skeletons while loading
-      // 1. Referência à subcoleção de transações do usuário
-      const transactionsRef = collection(
-        db,
-        "user",
-        userId,
-        "user_transactions"
-      );
+  getTransactions() {
+    const appCache = new Cache();
+    appCache.loadFromLocalStorage();
 
-      // 2. Criar query para buscar as transações
-      const q = query(
-        transactionsRef,
-        orderBy("date", "desc"), // Ordena por data (mais recente primeiro)
-        limit(10) // Limita a 10 resultados
-      );
+    // Garante que profile é um array (mesmo que vazio)
+    const profile = Array.isArray(appCache.data?.transactions)
+      ? appCache.data.transactions
+      : [];
 
-      // 3. Executar a query
-      const querySnapshot = await getDocs(q);
+    console.log(profile); // Para debug
 
-      // 4. Processar os resultados
-      const transactions = [];
-      querySnapshot.forEach((doc) => {
-        transactions.push({
-          id: doc.id, // Inclui o ID do documento
-          ...doc.data(), // Inclui todos os campos do documento
-        });
-      });
-
-      this.transactions = transactions;
-      this.loading = false;
-      this.render();
-
-      // Armazenar em cache no armazenamento local
-      localStorage.setItem("recentTransactions", JSON.stringify(transactions));
-
-      return transactions;
-    } catch (error) {
-      console.error("Erro ao carregar transações:", error);
-      this.transactions = [];
-      return [];
-    }
+    // Garante que _transactions é um array antes de fazer spread
+    this._transactions = [...profile, ...(Array.isArray(this._transactions) ? this._transactions : [])];
   }
 
   createTransactionItem(transaction) {
@@ -78,13 +40,17 @@ class RecentTransactions extends HTMLElement {
 
     // Helper to format date as dd/mm/yyyy
     const formatDate = (dateStr) => {
-      if (!dateStr) return "Sem data";
-      const d = new Date(dateStr);
-      if (isNaN(d)) return dateStr;
-      const day = String(d.getDate()).padStart(2, '0');
-      const month = String(d.getMonth() + 1).padStart(2, '0');
-      const year = d.getFullYear();
-      return `${day}/${month}/${year}`;
+      try {
+        // Adiciona o horário e ajusta para o fuso horário local
+        const date = new Date(dateStr);
+
+        // Ajusta para o fuso horário local sem mudar o valor absoluto
+        const adjustedDate = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
+
+        return adjustedDate.toLocaleDateString('pt-BR');
+      } catch {
+        return "Data inválida";
+      }
     };
     // Helper to capitalize first letter
     const capitalize = (str) =>
@@ -178,9 +144,9 @@ class RecentTransactions extends HTMLElement {
         </div>
         <div class="card-content">
           ${Array(5)
-            .fill()
-            .map(
-              () => `
+          .fill()
+          .map(
+            () => `
             <div class="transaction-skeleton">
               <div class="skeleton-info">
                 <div class="skeleton-icon"></div>
@@ -189,8 +155,8 @@ class RecentTransactions extends HTMLElement {
               <div class="skeleton-amount"></div>
             </div>
           `
-            )
-            .join("")}
+          )
+          .join("")}
         </div>
       `;
     } else if (Array.isArray(this._transactions)) {
@@ -226,19 +192,9 @@ class RecentTransactions extends HTMLElement {
     return this._transactions;
   }
 
-  async connectedCallback() {
-    // Load from cache first if available
-    const cached = localStorage.getItem("recentTransactions");
-    if (cached) {
-      this.transactions = JSON.parse(cached);
-    }
-    auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        await this.getTransactions(user.uid);
-      } else {
-        console.log("Usuário não autenticado");
-      }
-    });
+  connectedCallback() {
+    this.getTransactions()
+    this.render();
   }
 }
 
