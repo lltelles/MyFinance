@@ -4,7 +4,7 @@ class Budget extends HTMLElement {
   constructor() {
     super()
     this.attachShadow({ mode: "open" })
-
+    this.cache = new Cache();
     const linkElem = document.createElement("link")
     linkElem.setAttribute("rel", "stylesheet")
     linkElem.setAttribute("href", "budget-view.css")
@@ -19,9 +19,8 @@ class Budget extends HTMLElement {
   }
 
   CalculateBudget() {
-    const appCache = new Cache();
-    appCache.loadFromLocalStorage();
-    const profile = appCache.data.budget;
+    this.cache.loadFromLocalStorage();
+    const profile = this.cache.data.budget;
     console.log(profile)
     this._budgetItems = [
       ...profile,

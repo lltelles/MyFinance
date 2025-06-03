@@ -7,7 +7,7 @@ class FinancialSummaryCard extends HTMLElement {
     this._totalIncome = 0;
     this._totalExpanse = 0;
     this._balance = 0;
-    // Adicionado para controle de loading
+    this.cache = new Cache();
 
     const linkElem = document.createElement("link")
     linkElem.setAttribute("rel", "stylesheet")
@@ -18,9 +18,8 @@ class FinancialSummaryCard extends HTMLElement {
   }
 
   CalculateBalance() {
-      const appCache = new Cache();
-      appCache.loadFromLocalStorage();
-      const profile = appCache.data.totals;
+      this.cache.loadFromLocalStorage();
+      const profile = this.cache.data.totals;
       this._balance = profile.balance
       this._totalExpanse = profile.expense
       this._totalIncome = profile.income

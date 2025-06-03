@@ -10,6 +10,7 @@ class ExpenseAnalytics extends HTMLElement {
       "#FF9F40", "#8AC24A", "#F06292", "#7986CB", "#4DB6AC",
       "#FF8A65", "#A1887F"
     ];
+    this.cache = new Cache();
 
     const linkElem = document.createElement("link")
     linkElem.setAttribute("rel", "stylesheet")
@@ -28,9 +29,8 @@ class ExpenseAnalytics extends HTMLElement {
   }
 
   CalculateAnalytics() {
-    const appCache = new Cache();
-    appCache.loadFromLocalStorage();
-    const profile = appCache.data.transaction_categories;
+    this.cache.loadFromLocalStorage();
+    const profile = this.cache.data.transaction_categories;
     console.log(profile)
     this._categories = [
       ...profile,

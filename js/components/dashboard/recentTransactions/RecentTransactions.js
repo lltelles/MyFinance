@@ -6,6 +6,7 @@ class RecentTransactions extends HTMLElement {
     this.attachShadow({ mode: "open" });
     this._transactions = [];
     this.loading = false;
+    this.cache = new Cache();
 
     const linkElem = document.createElement("link");
     linkElem.setAttribute("rel", "stylesheet");
@@ -21,12 +22,10 @@ class RecentTransactions extends HTMLElement {
   }
 
   getTransactions() {
-    const appCache = new Cache();
-    appCache.loadFromLocalStorage();
+    this.cache.loadFromLocalStorage();
 
-    // Garante que profile é um array (mesmo que vazio)
-    const profile = Array.isArray(appCache.data?.transactions)
-      ? appCache.data.transactions
+    const profile = Array.isArray(this.cache.data?.transactions)
+      ? this.cache.data.transactions
       : [];
 
     console.log(profile); // Para debug
