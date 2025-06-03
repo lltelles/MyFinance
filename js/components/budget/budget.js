@@ -1,11 +1,10 @@
-import { db, auth } from "../../app.js";
-import { collection, query, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import Cache from "../cache/cache.js"
 
 class Budget extends HTMLElement {
   constructor() {
     super()
     this.attachShadow({ mode: "open" })
-
+    this.cache = new Cache();
     const linkElem = document.createElement("link")
     linkElem.setAttribute("rel", "stylesheet")
     linkElem.setAttribute("href", "budget-view.css")
@@ -19,42 +18,13 @@ class Budget extends HTMLElement {
     this.render()
   }
 
-  async CalculateBudget(userId) {
-    try {
-      const transactionsRef = collection(db, "user", userId, "user_transactions");
-      const q = query(transactionsRef);
-      const querySnapshot = await getDocs(q);
-      let spendingByCategory = {};
-      let budgetsByCategory = {};
-      const defaultBudgets = {
-        'alimentacao': 800,
-        'transporte': 500,
-        'moradia': 3000,
-        'lazer': 300,
-        'saude': 400,
-        'educacao': 600,
-        'outros': 200
-      };
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        if (data.transaction_type === 'expense') {
-          spendingByCategory[data.category] =
-            (spendingByCategory[data.category] || 0) + data.value;
-        }
-        if (data.budget) {
-          budgetsByCategory[data.category] = data.budget;
-        }
-      });
-      this._budgetItems = Object.keys(spendingByCategory).map(category => ({
-        category: category,
-        spent: spendingByCategory[category],
-        budget: budgetsByCategory[category] || defaultBudgets[category] || 1200
-      }));
-      // Salva no cache
-      localStorage.setItem("budgetData", JSON.stringify(this._budgetItems));
-    } catch (error) {
-      console.error("Erro ao carregar transações:", error);
-    }
+  CalculateBudget() {
+    this.cache.loadFromLocalStorage();
+    const profile = this.cache.data.budget;
+    console.log(profile)
+    this._budgetItems = [
+      ...profile,
+    ] || [...this._budgetItems];
   }
 
   formatCurrency(value) {
@@ -77,7 +47,7 @@ class Budget extends HTMLElement {
   }
 
   renderBudgetItem(item) {
-    const percentage = Math.min(100, (item.spent / item.budget) * 100)
+    const percentage = Math.min(10000, (item.spent / item.budget) * 100)
     const color = this.getProgressColor(item.spent, item.budget)
 
     const budgetElement = document.createElement("div")
@@ -220,30 +190,8 @@ class Budget extends HTMLElement {
   }
 
   async connectedCallback() {
-    // Carrega do cache primeiro, se disponível
-    const cached = localStorage.getItem("budgetData");
-    if (cached) {
-      try {
-        const data = JSON.parse(cached);
-        if (Array.isArray(data)) {
-          this._budgetItems = data;
-          console.log("[Budget] Loaded budget items from cache:", data);
-        }
-      } catch (e) {
-        // Se falhar, ignora e segue normalmente
-      }
-    }
-    this.loading = true;
+    this.CalculateBudget();
     this.render();
-    auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        await this.CalculateBudget(user.uid);
-      } else {
-        console.log("Usuário não autenticado");
-      }
-      this.loading = false;
-      this.render();
-    });
   }
 }
 

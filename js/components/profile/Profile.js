@@ -1,5 +1,4 @@
-import { db, auth } from "../../app.js";
-import { getDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import  Cache  from "../cache/cache.js"
 
 class ProfileDashboard extends HTMLElement {
   constructor() {
@@ -38,41 +37,21 @@ class ProfileDashboard extends HTMLElement {
     this.render()
   }
 
-  async connectedCallback() {
-    auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        await this.loadProfileData(user.uid);
-        this.renderLogoutButton(); 
-      } else {
-        console.log("Usuário não autenticado");
-        this._profileData.email = "Faça login para ver seu perfil";
-      }
-      this.render();
-    });
+  connectedCallback() {
+    this.loadProfileData();
+    this.render();
   }
 
-  async loadProfileData(userId) {
-    try {
-      const userDocRef = doc(db, "user", userId); 
-      const userDoc = await getDoc(userDocRef);
-
-      if (userDoc.exists()) {
-        const userData = userDoc.data();
-        this._profileData = {
-          ...this._profileData, 
-          ...userData,         
-          email: userData.email || auth.currentUser?.email || "" 
-        };
-      } else {
-        console.log("Documento não encontrado! Usando dados padrão.");
-        this._profileData.email = auth.currentUser?.email || "";
-      }
-    } catch (error) {
-      console.error("Erro ao carregar perfil:", error);
-      this._profileData.email = "Erro ao carregar perfil";
-      console.log(userId)
+  loadProfileData() {
+    const appCache = new Cache();
+    appCache.loadFromLocalStorage();
+    const profile = appCache.data.profileDataCache;
+    this._profileData = {
+      ...this._profileData,
+      name: profile.full_name,
+      email: profile.email,
+      location: profile.location,
     }
-    this.render
   }
 
   
