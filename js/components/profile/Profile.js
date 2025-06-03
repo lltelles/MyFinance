@@ -1,6 +1,5 @@
 import { db, auth } from "../../app.js";
 import { getDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 class ProfileDashboard extends HTMLElement {
   constructor() {
@@ -76,34 +75,7 @@ class ProfileDashboard extends HTMLElement {
     this.render
   }
 
-  renderLogoutButton() {
-    const logoutBtn = document.createElement("button");
-    logoutBtn.className = "logout-button";
-    logoutBtn.innerHTML = `
-      <span class="logout-icon"></span>
-      <span>Sair</span>
-    `;
-    
-    logoutBtn.addEventListener("click", async () => {
-      try {
-        await signOut(auth);
-        console.log("Usuário deslogado com sucesso");
-        // Você pode adicionar redirecionamento ou atualização da UI aqui
-        window.location.href = './login.html'; // Recarrega a página após logout
-      } catch (error) {
-        console.error("Erro ao fazer logout:", error);
-      }
-    });
-
-    // Adiciona o botão ao shadowRoot
-    if (this.shadowRoot) {
-      const existingBtn = this.shadowRoot.querySelector(".logout-button");
-      if (existingBtn) {
-        existingBtn.remove();
-      }
-      this.shadowRoot.appendChild(logoutBtn);
-    }
-  }
+  
 
   render() {
 
@@ -113,16 +85,6 @@ class ProfileDashboard extends HTMLElement {
     const headerContainer = document.createElement("div");
     headerContainer.className = "profile-header";
 
-    if (auth.currentUser) {
-      const logoutBtn = document.createElement("button");
-      logoutBtn.className = "logout-button";
-      logoutBtn.innerHTML = `Sair`;
-      logoutBtn.addEventListener("click", async () => {
-        await signOut(auth);
-        window.location.href= 'login.html';
-      });
-      headerContainer.appendChild(logoutBtn);
-    }
 
     const tabsNav = document.createElement("div")
     tabsNav.className = "tabs-nav"
