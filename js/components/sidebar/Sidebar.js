@@ -21,12 +21,7 @@ class AppSidebar extends HTMLElement {
         icon: '<svg xmlns="http://www.w3.org/2000/svg" ...></svg>',
         url: 'budget.html'
       },
-      {
-        id: 'profile',
-        label: 'Perfil',
-        icon: '<svg xmlns="http://www.w3.org/2000/svg" ...></svg>',
-        url: 'profile.html'
-      }
+      
     ];
 
     this._isOpen = true;
