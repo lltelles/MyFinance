@@ -168,7 +168,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         // Salvar dados adicionais no Firestore
-        await setDoc(doc(db, 'users', userCredential.user.uid), {
+        await setDoc(doc(db, 'user', userCredential.user.uid), {
           name,
           last_name,
           email,

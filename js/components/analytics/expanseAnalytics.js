@@ -1,5 +1,4 @@
-import { db, auth } from "../../app.js";
-import { collection, query, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import Cache from "../cache/cache.js"
 
 class ExpenseAnalytics extends HTMLElement {
   constructor() {
@@ -11,6 +10,7 @@ class ExpenseAnalytics extends HTMLElement {
       "#FF9F40", "#8AC24A", "#F06292", "#7986CB", "#4DB6AC",
       "#FF8A65", "#A1887F"
     ];
+    this.cache = new Cache();
 
     const linkElem = document.createElement("link")
     linkElem.setAttribute("rel", "stylesheet")
@@ -28,38 +28,14 @@ class ExpenseAnalytics extends HTMLElement {
     this.loadChartJS()
   }
 
-  async CalculateAnalytics(userId) {
-    try {
-      const transactionsRef = collection(db, "user", userId, "user_transactions");
-      const q = query(transactionsRef);
-      const querySnapshot = await getDocs(q);
+  CalculateAnalytics() {
+    this.cache.loadFromLocalStorage();
+    const profile = this.cache.data.transaction_categories;
+    console.log(profile)
+    this._categories = [
+      ...profile,
+    ] || [...this._categories];
 
-      // Objeto para acumular gastos por categoria
-      let spendingByCategory = {};
-
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-
-        if (data.transaction_type === 'expense') {
-          // Acumula gastos por categoria
-          spendingByCategory[data.category] =
-            (spendingByCategory[data.category] || 0) + data.value;
-        }
-
-      });
-
-      // Transforma em array no formato esperado pelo componente
-      this._categories = Object.keys(spendingByCategory).map((category, index) => ({
-        name: category,
-        value: spendingByCategory[category],
-        color: this._colorPalette[index % this._colorPalette.length]
-      }));
-
-      // Salva no cache
-      localStorage.setItem("expenseAnalyticsCategories", JSON.stringify(this._categories));
-    } catch (error) {
-      console.error("Erro ao carregar transações:", error);
-    }
   }
 
   loadChartJS() {
@@ -271,31 +247,9 @@ class ExpenseAnalytics extends HTMLElement {
     return this._categories
   }
 
-  async connectedCallback() {
-    // Carrega do cache primeiro, se disponível
-    const cached = localStorage.getItem("expenseAnalyticsCategories");
-    if (cached) {
-      try {
-        const data = JSON.parse(cached);
-        if (Array.isArray(data)) {
-          this._categories = data;
-          console.log("[ExpenseAnalytics] Loaded categories from cache:", data);
-        }
-      } catch (e) {
-        // Se falhar, ignora e segue normalmente
-      }
-    }
-    this.loading = true;
+  connectedCallback() {
+    this.CalculateAnalytics()
     this.render();
-    auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        await this.CalculateAnalytics(user.uid);
-      } else {
-        console.log("Usuário não autenticado");
-      }
-      this.loading = false;
-      this.render();
-    });
   }
 
   disconnectedCallback() {

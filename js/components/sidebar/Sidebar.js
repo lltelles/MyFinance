@@ -1,3 +1,6 @@
+import { auth } from "../../app.js";
+import { signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
 class AppSidebar extends HTMLElement {
   constructor() {
     super();
@@ -73,17 +76,56 @@ class AppSidebar extends HTMLElement {
 
     this.setupLogoutButton(); // garante o evento no botão já renderizado
   }
-
+  clearCache() {
+    this.data = {
+      transactions: [],
+      profileData: {
+        name: "",
+        last_name: "",
+        full_name: "",
+        email: "",
+        location: "",
+      },
+      totals: {
+        income: 0,
+        expense: 0,
+        balance: 0
+      }
+    };
+    localStorage.removeItem("cache");
+  }
   setupLogoutButton() {
     const logoutBtn = this.querySelector(".logout-button");
-    if (auth.currentUser && logoutBtn) {
-      logoutBtn.addEventListener("click", async () => {
+    if (!logoutBtn) return;
+
+    // Remove qualquer listener anterior para evitar duplicação
+    logoutBtn.replaceWith(logoutBtn.cloneNode(true));
+    const freshLogoutBtn = this.querySelector(".logout-button");
+
+    // Atualiza a visibilidade do botão e configura o listener
+    const updateButton = () => {
+      if (auth.currentUser) {
+        freshLogoutBtn.style.display = 'block';
+      } else {
+        freshLogoutBtn.style.display = 'none';
+      }
+    };
+
+    // Configura o listener para logout
+    freshLogoutBtn.addEventListener("click", async () => {
+      try {
         await signOut(auth);
+        this.clearCache?.(); // Usando operador opcional caso clearCache não exista
         window.location.href = 'index.html';
-      });
-    } else if (!auth.currentUser && logoutBtn) {
-      logoutBtn.style.display = 'none';
-    }
+      } catch (error) {
+        console.error("Logout failed:", error);
+        alert("Não foi possível fazer logout. Tente novamente.");
+      }
+    });
+
+    // Atualiza inicialmente e observa mudanças no estado de autenticação
+    updateButton();
+    auth.onAuthStateChanged(updateButton);
   }
 
   setupEventListeners() {
