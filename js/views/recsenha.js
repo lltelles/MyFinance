@@ -116,12 +116,12 @@ document.addEventListener('DOMContentLoaded', setupRecoverForm);
 
 // Função para redirecionar para a página de login
 function login() {
-    window.location.href = "/views/login.html";
+    window.location.href = "/public/login.html";
 }
 
 // Função para redirecionar para a página de cadastro
 function register() {
-    window.location.href = "/MyFinance/views/register.html"; // ajuste se o nome for diferente
+    window.location.href = "/MyFinance/public/register.html"; // ajuste se o nome for diferente
 }
 
 // Menu responsivo (se estiver usando ícone bx-menu)
