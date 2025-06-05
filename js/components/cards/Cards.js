@@ -1,4 +1,5 @@
-import Cache from "../cache/cache.js"
+import { db, auth } from "../../app.js";
+import { collection, query, getDocs, or, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 class FinancialSummaryCard extends HTMLElement {
   constructor() {
@@ -7,7 +8,7 @@ class FinancialSummaryCard extends HTMLElement {
     this._totalIncome = 0;
     this._totalExpanse = 0;
     this._balance = 0;
-    this.cache = new Cache();
+    this.loading = true;
 
     const linkElem = document.createElement("link")
     linkElem.setAttribute("rel", "stylesheet")
@@ -17,12 +18,41 @@ class FinancialSummaryCard extends HTMLElement {
     this.render();
   }
 
-  CalculateBalance() {
-      this.cache.loadFromLocalStorage();
-      const profile = this.cache.data.totals;
-      this._balance = profile.balance
-      this._totalExpanse = profile.expense
-      this._totalIncome = profile.income
+  async CalculateBalance(userId) {
+    try {
+      // 1. Referência à subcoleção de transações do usuário
+      const transactionsRef = collection(db, "user", userId, "user_transactions");
+      // 2. Criar query para buscar as transações
+      const q = query(transactionsRef,
+        or(
+          where("transaction_type", "==", "expense"),
+          where("transaction_type", "==", "income")
+        )
+      );
+      const querySnapshot = await getDocs(q);
+      this._totalIncome = 0;
+      this._totalExpanse = 0;
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        const amount = Number(data.value) || 0;
+        if (data.transaction_type == "income") {
+          this._totalIncome += amount;
+        } else if (data.transaction_type == "expense") {
+          this._totalExpanse += amount;
+        }
+      });
+      this._balance = this._totalIncome - this._totalExpanse;
+      const cacheData = {
+        totalIncome: this._totalIncome,
+        totalExpanse: this._totalExpanse,
+        balance: this._balance
+      };
+      localStorage.setItem("financialSummaryCard", JSON.stringify(cacheData));
+      return this._balance;
+    } catch (error) {
+      console.error("Erro ao carregar transações:", error);
+      return 0;
+    }
   }
 
   formatCurrency(value) {
@@ -54,7 +84,7 @@ class FinancialSummaryCard extends HTMLElement {
       },
       savings: {
         title: "Economias",
-        value:  0,
+        value: 0,
         color: "#22c55e",
         icon: "💸",
       },
@@ -124,9 +154,31 @@ class FinancialSummaryCard extends HTMLElement {
     return this._value
   }
 
-  connectedCallback() {
-    this.CalculateBalance();
+  async connectedCallback() {
+    // Carrega do cache primeiro, se disponível
+    const cached = localStorage.getItem("financialSummaryCard");
+    if (cached) {
+      try {
+        const data = JSON.parse(cached);
+        this._totalIncome = data.totalIncome || 0;
+        this._totalExpanse = data.totalExpanse || 0;
+        this._balance = data.balance || 0;
+        console.log("[FinancialSummaryCard] Loaded card data from cache:", data);
+      } catch (e) {
+        // Se falhar, ignora e segue normalmente
+      }
+    }
+    this.loading = true;
     this.render();
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        await this.CalculateBalance(user.uid);
+      } else {
+        console.log("Usuário não autenticado");
+      }
+      this.loading = false;
+      this.render();
+    });
   }
 
 }

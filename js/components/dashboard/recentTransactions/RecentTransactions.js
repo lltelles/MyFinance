@@ -1,4 +1,11 @@
-import Cache from "../../cache/cache.js"
+import { db, auth } from "../../../app.js";
+import {
+  collection,
+  query,
+  getDocs,
+  orderBy,
+  limit,
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 class RecentTransactions extends HTMLElement {
   constructor() {
@@ -6,7 +13,6 @@ class RecentTransactions extends HTMLElement {
     this.attachShadow({ mode: "open" });
     this._transactions = [];
     this.loading = false;
-    this.cache = new Cache();
 
     const linkElem = document.createElement("link");
     linkElem.setAttribute("rel", "stylesheet");
@@ -21,17 +27,50 @@ class RecentTransactions extends HTMLElement {
     }).format(value);
   }
 
-  getTransactions() {
-    this.cache.loadFromLocalStorage();
+  async getTransactions(userId) {
+    try {
+      this.loading = true;
+      this.render(); // Show skeletons while loading
+      // 1. Referência à subcoleção de transações do usuário
+      const transactionsRef = collection(
+        db,
+        "user",
+        userId,
+        "user_transactions"
+      );
 
-    const profile = Array.isArray(this.cache.data?.transactions)
-      ? this.cache.data.transactions
-      : [];
+      // 2. Criar query para buscar as transações
+      const q = query(
+        transactionsRef,
+        orderBy("date", "desc"), // Ordena por data (mais recente primeiro)
+        limit(10) // Limita a 10 resultados
+      );
 
-    console.log(profile); // Para debug
+      // 3. Executar a query
+      const querySnapshot = await getDocs(q);
 
-    // Garante que _transactions é um array antes de fazer spread
-    this._transactions = [...profile, ...(Array.isArray(this._transactions) ? this._transactions : [])];
+      // 4. Processar os resultados
+      const transactions = [];
+      querySnapshot.forEach((doc) => {
+        transactions.push({
+          id: doc.id, // Inclui o ID do documento
+          ...doc.data(), // Inclui todos os campos do documento
+        });
+      });
+
+      this.transactions = transactions;
+      this.loading = false;
+      this.render();
+
+      // Armazenar em cache no armazenamento local
+      localStorage.setItem("recentTransactions", JSON.stringify(transactions));
+
+      return transactions;
+    } catch (error) {
+      console.error("Erro ao carregar transações:", error);
+      this.transactions = [];
+      return [];
+    }
   }
 
   createTransactionItem(transaction) {
@@ -191,10 +230,19 @@ class RecentTransactions extends HTMLElement {
     return this._transactions;
   }
 
-  connectedCallback() {
-    this.getTransactions()
-    this.render();
+  async connectedCallback() {
+    // Load from cache first if available
+    const cached = localStorage.getItem("recentTransactions");
+    if (cached) {
+      this.transactions = JSON.parse(cached);
+    }
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        await this.getTransactions(user.uid);
+      } else {
+        console.log("Usuário não autenticado");
+      }
+    });
   }
 }
-
 customElements.define("recent-transactions", RecentTransactions);
