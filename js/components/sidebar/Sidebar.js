@@ -60,7 +60,7 @@ class AppSidebar extends HTMLElement {
     }
 
     this.innerHTML = `
-      <div class="sidebar-header">MyFinance</div>
+      <div class="sidebar-header">MYFINANCE</div>
       <div class="sidebar-content">
         ${this.menuItems.map(item => `
           <a href="${item.url}" class="menu-item ${item.active ? 'active' : ''}" data-id="${item.id}">
@@ -116,7 +116,7 @@ class AppSidebar extends HTMLElement {
       try {
         await signOut(auth);
         this.clearCache?.(); // Usando operador opcional caso clearCache não exista
-        window.location.href = 'index.html';
+        window.location.href = '../index.html';
       } catch (error) {
         console.error("Logout failed:", error);
         alert("Não foi possível fazer logout. Tente novamente.");
