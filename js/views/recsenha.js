@@ -120,13 +120,13 @@
 
   if (loginBtn) {
     loginBtn.addEventListener("click", () => {
-      window.location.href = "../views/login.html"; 
+      window.location.href = "login.html"; 
     });
   }
 
   if (registerBtn) {
     registerBtn.addEventListener("click", () => {
-      window.location.href = "../views/login.html"; 
+      window.location.href = "login.html"; 
     });
   }
 });

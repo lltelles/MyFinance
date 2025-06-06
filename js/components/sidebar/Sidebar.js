@@ -116,7 +116,7 @@ class AppSidebar extends HTMLElement {
       try {
         await signOut(auth);
         this.clearCache?.(); // Usando operador opcional caso clearCache não exista
-        window.location.href = '../index.html';
+        window.location.href = 'index.html';
       } catch (error) {
         console.error("Logout failed:", error);
         alert("Não foi possível fazer logout. Tente novamente.");
