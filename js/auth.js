@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function () {
       // Tentativa de login
       try {
         await signInWithEmailAndPassword(auth, email, password);
-        window.location.href = 'dashboard.html';
+        window.location.href = './dashboard.html';
       } catch (error) {
         console.error('Erro no login:', error);
 

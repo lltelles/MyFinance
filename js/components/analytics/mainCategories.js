@@ -83,7 +83,7 @@ class MainCategories extends HTMLElement {
       const container = document.createElement("div")
       container.className = "categories-card"
       container.innerHTML = `
-        <link rel="stylesheet" href="/css/components/mainCategories.css">
+        <link rel="stylesheet" href="../../../public/css/components/mainCategories.css">
         <div class="card-header">
           <h3 class="skeleton-main-title"></h3>
           <p class="skeleton-main-subtitle"></p>
@@ -113,7 +113,7 @@ class MainCategories extends HTMLElement {
     const header = document.createElement("div")
     header.className = "card-header"
     header.innerHTML = `
-     <link rel="stylesheet" href="/css/components/mainCategories.css">
+     <link rel="stylesheet" href="../../../public/css/components/mainCategories.css">
       <h3>Principais Categorias</h3>
       <p>Suas maiores despesas</p>
     `

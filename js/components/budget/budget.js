@@ -89,7 +89,7 @@ class Budget extends HTMLElement {
     budgetElement.className = "budget-row"
 
     budgetElement.innerHTML = `
-     <link rel="stylesheet" href="/css/components/budget.css">
+     <link rel="stylesheet" href="../../../public/css/components/budget.css">
       <div class="budget-header">
         <span class="category-name">${item.category}</span>
         <div class="budget-values">
@@ -114,7 +114,7 @@ class Budget extends HTMLElement {
       const container = document.createElement("div")
       container.className = "budget-card"
       container.innerHTML = `
-        <link rel="stylesheet" href="/css/components/budget.css">
+        <link rel="stylesheet" href="../../../public/css/components/budget.css">
         <div class="card-header">
           <h3 class="skeleton-budget-title"></h3>
           <p class="skeleton-budget-subtitle"></p>
