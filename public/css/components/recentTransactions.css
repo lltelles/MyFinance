@@ -22,8 +22,9 @@
 
 .card-content {
   padding: 16px 20px;
-  display: grid;
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
   height: 450px;
   min-height: 450px;
   max-height: 450px;
@@ -53,6 +54,10 @@
     max-height: 250px;
     min-height: 180px;
     height: auto;
+    /* keep flex and row-gap for mobile as well */
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
   }
 }
 
@@ -63,6 +68,7 @@
 }
 
 .transaction-item {
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: space-between;

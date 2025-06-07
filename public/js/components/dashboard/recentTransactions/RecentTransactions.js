@@ -215,13 +215,20 @@ class RecentTransactions extends HTMLElement {
   }
 
   set transactions(value) {
-    // Garante que value seja sempre um array
+    // Sort by timestamp descending if available, otherwise by date
     if (Array.isArray(value)) {
+      value.sort((a, b) => {
+        if (a.timestamp && b.timestamp) {
+          return new Date(b.timestamp) - new Date(a.timestamp);
+        }
+        // fallback to date
+        return new Date(b.date) - new Date(a.date);
+      });
       this._transactions = value;
     } else if (value) {
-      this._transactions = [value]; // Converte objeto único em array
+      this._transactions = [value];
     } else {
-      this._transactions = []; // Valor padrão para array vazio
+      this._transactions = [];
     }
     this.render();
   }
