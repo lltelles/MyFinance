@@ -103,7 +103,7 @@ class FinancialSummaryCard extends HTMLElement {
     if (this.loading) {
       // Skeleton loader
       card.innerHTML = `
-        <link rel="stylesheet" href="../../../public/css/components/cards.css">
+        <link rel="stylesheet" href="../../public/css/components/cards.css">
         <div class="card-content">
           <div class="card-title skeleton-title"></div>
           <div class="card-value skeleton-value"></div>
