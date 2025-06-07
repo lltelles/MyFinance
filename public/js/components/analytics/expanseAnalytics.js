@@ -123,7 +123,7 @@ class ExpenseAnalytics extends HTMLElement {
       const container = document.createElement("div")
       container.className = "analytics-card"
       container.innerHTML = `
-        <link rel="stylesheet" href="../../../public/css/components/expanseAnalytics.css">
+        <link rel="stylesheet" href="./css/components/expanseAnalytics.css">
         <div class="card-header">
           <h3 class="skeleton-analytics-title"></h3>
           <p class="skeleton-analytics-subtitle"></p>
@@ -154,7 +154,7 @@ class ExpenseAnalytics extends HTMLElement {
     container.className = "analytics-card"
 
     container.innerHTML = `
-    <link rel="stylesheet" href="../../../public/css/components/expanseAnalytics.css">
+    <link rel="stylesheet" href="./css/components/expanseAnalytics.css">
       <div class="card-header">
         <h3>Visão Geral de Despesas</h3>
         <p>Distribuição de gastos por categoria</p>

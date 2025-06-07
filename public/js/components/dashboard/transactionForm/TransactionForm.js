@@ -18,7 +18,7 @@ class TransactionForm extends HTMLElement {
     // Add stylesheet (only once, correct path)
     const linkElem = document.createElement("link")
     linkElem.setAttribute("rel", "stylesheet")
-    linkElem.setAttribute("href", "../../../public/css/components/transactionForm.css")
+    linkElem.setAttribute("href", "./css/components/transactionForm.css")
     this.shadowRoot.appendChild(linkElem)
 
     // Add form

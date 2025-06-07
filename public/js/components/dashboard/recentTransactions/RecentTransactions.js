@@ -112,7 +112,7 @@ class RecentTransactions extends HTMLElement {
     item.className = `transaction-item ${leftBorderColor}`;
 
     item.innerHTML = `
-      <link rel="stylesheet" href="../../../public/css/components/recentTransactions.css">
+      <link rel="stylesheet" href="./css/components/recentTransactions.css">
       <div class="transaction-info">
         <div class="${iconClass}">
           <span class="icon">${iconSymbol}</span>
@@ -139,7 +139,7 @@ class RecentTransactions extends HTMLElement {
     const skeleton = document.createElement("div");
     skeleton.className = "card";
     skeleton.innerHTML = `
-      <link rel="stylesheet" href="../../../public/css/components/recentTransactions.css">
+      <link rel="stylesheet" href="./css/components/recentTransactions.css">
       <div class="card-header">
         <div class="skeleton-title"></div>
         <div class="skeleton-subtitle"></div>
