@@ -11,7 +11,6 @@ body {
 
 html {
   height: 100%;
-
 }
 
 .container {
@@ -97,7 +96,6 @@ header.rolagem ul li a {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-
   display: flex;
   align-items: center;
   justify-content: center;
@@ -116,7 +114,7 @@ header.rolagem ul li a {
 
 .sobre-nos-container {
   display: flex;
-  flex-direction: column; /* importante para colocar intro e grupo em colunas separadas */
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 8rem;
@@ -124,12 +122,11 @@ header.rolagem ul li a {
   background-color: #f4f4f4;
 }
 
-/* Caixa para o texto introdutório (sem background color) */
 .sobre-intro {
   background: linear-gradient(145deg, #ffffff, #f0f0f0);
   height: 60vh;
   width: 19vw;
-  min-width: 280px; /* para melhor responsividade */
+  min-width: 280px;
   padding: 20px;
   border-radius: 20px;
   box-shadow:
@@ -142,7 +139,6 @@ header.rolagem ul li a {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Grupo para Missão, Visão e Valores */
 .sobre-grupo {
   display: flex;
   justify-content: center;
@@ -150,16 +146,15 @@ header.rolagem ul li a {
   gap: 2rem;
   width: 100%;
   max-width: 1100px;
-  flex-wrap: wrap; /* para ficar responsivo em telas menores */
+  flex-wrap: wrap;
   margin: 0 auto;
 }
 
-/* Cards com profundidade e sombra aprimorada */
 .sobre {
   background: linear-gradient(145deg, #ffffff, #f0f0f0);
   height: 60vh;
   width: 19vw;
-  min-width: 280px; /* para melhor responsividade */
+  min-width: 280px;
   padding: 20px;
   border-radius: 20px;
   box-shadow:
@@ -176,7 +171,8 @@ header.rolagem ul li a {
   transform: translateY(-10px);
   box-shadow:
     1px 10px 25px rgba(0, 0, 0, 0.1),
-    -20px -5px 20px rgba(137, 132, 200, 0.7);}
+    -20px -5px 20px rgba(137, 132, 200, 0.7);
+}
 
 .sobre h2 {
   font-size: 22px;
@@ -200,20 +196,87 @@ header.rolagem ul li a {
   margin-bottom: 8px;
 }
 
-.rodape {
-  height: 20vh;
-  background-color: #666666;
-}
-
-.imag2{
+.imag2 {
   object-fit: cover;
   width: 50%;
   height: 50%;
   margin: auto;
   margin-top: -20px;
 }
-.rodape{
-  color:#ffffff;
-  font-size: 12px;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+/* === NOVA SEÇÃO DO FOOTER AQUI === */
+footer.rodape {
+  background-color: #1e293b;
+  color: white;
+  padding: 40px 20px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.footer-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-section {
+  flex: 1 1 250px;
+  min-width: 200px;
+}
+
+.footer-section h3 {
+  margin-bottom: 10px;
+  font-size: 18px;
+  border-bottom: 1px solid white;
+  padding-bottom: 5px;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-section ul li {
+  margin-bottom: 6px;
+}
+
+.footer-section p {
+  margin: 5px 0;
+}
+
+.social-icons {
+  display: flex;
+  gap: 25px;
+  margin-top: 10px;
+  justify-content: center;/
+}
+
+.social-icons a {
+  color: white;
+  font-size: 18px;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: #38bdf8;
+  transform: scale(1.2);
+}
+
+
+.social-icons a[href*="instagram"]:hover i {
+  background: linear-gradient(45deg, purple, red);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Facebook: azul tradicional */
+.social-icons a[href*="facebook"]:hover i {
+  color: #1877f2;
+}
+
+/* WhatsApp: verde tradicional */
+.social-icons a[href*="wa.me"]:hover i {
+  color: #25d366;
 }
