@@ -103,7 +103,7 @@ class FinancialSummaryCard extends HTMLElement {
     if (this.loading) {
       // Skeleton loader
       card.innerHTML = `
-        <link rel="stylesheet" href="../../public/css/components/cards.css">
+        <link rel="stylesheet" href="../css/components/cards.css">
         <div class="card-content">
           <div class="card-title skeleton-title"></div>
           <div class="card-value skeleton-value"></div>
@@ -112,7 +112,7 @@ class FinancialSummaryCard extends HTMLElement {
       `
     } else {
       card.innerHTML = `
-        <link rel="stylesheet" href="../../../public/css/components/cards.css">
+        <link rel="stylesheet" href="../css/components/cards.css">
         <div class="card-content">
           <div class="card-title">${data.title}</div>
           <div class="card-value" style="color: ${data.color}">${this.formatCurrency(data.value)}</div>
