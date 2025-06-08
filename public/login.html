@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="./css/views/login.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <script type="module" src="./js/auth.js"></script>
     <script type="module" src="./js/app.js"></script>
     <title>My MyFinance</title>
@@ -31,8 +32,10 @@
                     <button class="btn white-btn" id="loginBtn" onclick="login()">Login</button>
                     <button class="btn" id="registerBtn" onclick="register()">Cadastro</button>
                 </div>
-                <div class="nav-menu-btn">
-                    <i class="bx bx-menu" onclick="myMenuFunction()"></i>
+                <div class="menu-hamburger" id="menu-hamburger" aria-label="Abrir menu" tabindex="0">
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </div>
             </nav>
             <div class="form-box">
