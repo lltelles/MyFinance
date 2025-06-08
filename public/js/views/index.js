@@ -3,6 +3,26 @@ window.addEventListener("scroll", function(){
     header.classList.toggle('rolagem',window.scrollY > 0)
 })
 
+document.addEventListener('DOMContentLoaded', function() {
+  // Hamburger menu toggle
+  const hamburger = document.getElementById('menu-hamburger');
+  const menu = document.querySelector('.menu');
+
+  if (hamburger && menu) {
+    hamburger.addEventListener('click', function() {
+      hamburger.classList.toggle('active');
+      menu.classList.toggle('active');
+    });
+    // Optional: close menu when clicking a menu item (mobile UX)
+    menu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        menu.classList.remove('active');
+      });
+    });
+  }
+});
+
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener('click', function (e) {
     const href = this.getAttribute('href');
