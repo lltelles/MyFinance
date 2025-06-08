@@ -69,9 +69,46 @@ header.rolagem ul li a {
   color: #fff !important;
 }
 
+header.rolagem .nav-logo p {
+  color: #fff !important;
+  transition: color 0.3s;
+}
+
+header.rolagem .menu-hamburger span {
+  background: #333 !important;
+  transition: background 0.3s;
+}
+
+@media (max-width: 900px) {
+  header.rolagem ul li a {
+    color: #000 !important;
+  }
+  .menu ul li a {
+    color: #000 !important;
+  }
+
+  .menu.active .mobile-login button {
+    color: #fff !important;
+  }
+
+  header.rolagem .nav-logo p {
+    color: #fff !important;
+    transition: color 0.3s;
+  }
+  header.rolagem .menu-hamburger span {
+    background: #333 !important;
+    transition: background 0.3s;
+  }
+}
+
 .btn-login {
   margin-left: auto;
+  display: block;
 }
+
+/* Hide mobile login on desktop, show desktop login */
+.desktop-login { display: block; }
+.mobile-login { display: none; }
 
 .btn-login button {
   width: 130px;
@@ -300,6 +337,13 @@ footer.rodape {
   transition: 0.4s;
 }
 
+.nav-logo p {
+  color: #333;
+  font-size: 25px;
+  font-weight: 600;
+  margin: 16px;
+}
+
 @media (max-width: 900px) {
   .menu {
     position: fixed;
@@ -328,6 +372,26 @@ footer.rodape {
   }
   .btn-login {
     margin-left: 0;
+    /* Show login button only inside menu on mobile */
+    display: none;
+  }
+  .desktop-login { display: none; }
+  .mobile-login {
+    display: none;
+  }
+  .menu.active .mobile-login {
+    display: block;
+    margin: 20px auto 0 auto;
+    text-align: center;
+    background-color: #666666;
+    padding: 1rem;
+  }
+  .menu ul li a {
+    color: #000 !important;
+  }
+
+  .menu.active .mobile-login button {
+    color: #fff !important;
   }
 }
 
@@ -339,4 +403,39 @@ footer.rodape {
 }
 .menu-hamburger.active span:nth-child(3) {
   transform: rotate(-45deg) translate(10px, -10px);
+}
+
+.menu.active .mobile-login button {
+  font-family: 'Poppins', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: #fff;
+  background: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+header.rolagem .menu-hamburger span {
+  background: #333 !important;
+  transition: background 0.3s;
+}
+
+@media (max-width: 900px) {
+  .menu-hamburger span {
+    background: #333;
+  }
+  header.rolagem .menu-hamburger span {
+    background: #fff !important;
+  }
+  header.rolagem .menu-hamburger.active span {
+    background: #333 !important;
+  }
 }
