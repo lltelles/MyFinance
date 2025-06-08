@@ -5,6 +5,8 @@ import {
   getDocs,
   orderBy,
   limit,
+  deleteDoc,
+  doc,
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 class RecentTransactions extends HTMLElement {
@@ -111,6 +113,34 @@ class RecentTransactions extends HTMLElement {
 
     item.className = `transaction-item ${leftBorderColor}`;
 
+    // Add delete button
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "delete-btn";
+    deleteBtn.title = "Excluir transação";
+    deleteBtn.innerHTML = `
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e53e3e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="3 6 5 6 21 6"></polyline>
+        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"></path>
+        <line x1="10" y1="11" x2="10" y2="17"></line>
+        <line x1="14" y1="11" x2="14" y2="17"></line>
+      </svg>
+    `;
+    deleteBtn.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      if (!confirm("Tem certeza que deseja excluir esta transação?")) return;
+      const user = auth.currentUser;
+      if (!user) return alert("Usuário não autenticado");
+      try {
+        await deleteDoc(doc(db, "user", user.uid, "user_transactions", transaction.id));
+        // Remove from local array and re-render
+        this._transactions = this._transactions.filter(t => t.id !== transaction.id);
+        this.render();
+      } catch (err) {
+        alert("Erro ao excluir transação");
+        console.error(err);
+      }
+    });
+
     item.innerHTML = `
       <link rel="stylesheet" href="./css/components/recentTransactions.css">
       <div class="transaction-info">
@@ -123,15 +153,17 @@ class RecentTransactions extends HTMLElement {
         </div>
       </div>
       <div class="transaction-amount">
-      <div class="${amountClass}">
-        ${amountPrefix} ${this.formatCurrency(transaction.value || 0)}
+        <div class="${amountClass}">
+          ${amountPrefix} ${this.formatCurrency(transaction.value || 0)}
+        </div>
+        <div class="transaction-date">
+          <p class="date">${formatDate(transaction.date)}</p>
+        </div>
       </div>
-      <div class="transaction-date">
-      <p class="date">${formatDate(transaction.date)}</p>
-      </div>
-      </div>
+      <div class="delete-hover"></div>
     `;
-
+    // Place delete button inside the delete-hover div
+    item.querySelector('.delete-hover').appendChild(deleteBtn);
     return item;
   }
 
