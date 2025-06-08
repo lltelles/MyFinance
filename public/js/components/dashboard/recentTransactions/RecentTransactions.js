@@ -124,7 +124,6 @@ class RecentTransactions extends HTMLElement {
     `;
     deleteBtn.addEventListener("click", async (e) => {
       e.stopPropagation();
-      if (!confirm("Tem certeza que deseja excluir esta transação?")) return;
       const user = auth.currentUser;
       if (!user) return alert("Usuário não autenticado");
       try {
@@ -204,7 +203,7 @@ class RecentTransactions extends HTMLElement {
     if (this.loading) {
       // Show skeleton for title, subtitle, and 5 transaction rows
       card.innerHTML = `
-        <link rel="stylesheet" href="../../../public/css/components/recentTransactions.css">
+        <link rel="stylesheet" href="./css/components/recentTransactions.css">
         <div class="card-header">
           <div class="skeleton-title"></div>
           <div class="skeleton-subtitle"></div>
@@ -227,18 +226,27 @@ class RecentTransactions extends HTMLElement {
         </div>
       `;
     } else if (Array.isArray(this._transactions)) {
-      this._transactions.forEach((transaction) => {
-        content.appendChild(this.createTransactionItem(transaction));
-      });
+      if (this._transactions.length === 0) {
+        // Show empty state message
+        const emptyMsg = document.createElement("div");
+        emptyMsg.className = "empty-transactions";
+        emptyMsg.textContent = "Nenhuma transação encontrada.";
+        content.appendChild(emptyMsg);
+      } else {
+        this._transactions.forEach((transaction) => {
+          content.appendChild(this.createTransactionItem(transaction));
+        });
+      }
       card.appendChild(header);
       card.appendChild(content);
     }
     while (this.shadowRoot.firstChild) {
       this.shadowRoot.removeChild(this.shadowRoot.firstChild);
     }
+    // Remove the old stylesheet link and use the correct one
     const linkElem = document.createElement("link");
     linkElem.setAttribute("rel", "stylesheet");
-    linkElem.setAttribute("href", "transaction-card.css");
+    linkElem.setAttribute("href", "./css/components/recentTransactions.css");
     this.shadowRoot.appendChild(linkElem);
     this.shadowRoot.appendChild(card);
   }

@@ -11,6 +11,7 @@
 .card-header {
   padding: 16px 20px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: white;
 }
 
 .card-title {
@@ -273,4 +274,13 @@
 }
 .delete-btn:hover {
   color: #b91c1c;
+}
+
+.empty-transactions {
+  text-align: center;
+  color: #888;
+  font-size: 15px;
+  margin-top: 40px;
+  font-weight: 500;
+  opacity: 0.85;
 }

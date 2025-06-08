@@ -6,12 +6,38 @@ class TransactionForm extends HTMLElement {
   constructor() {
     super()
     this.attachShadow({ mode: "open" })
+    this.loading = true;
+  }
+
+  renderSkeleton() {
+    const skeleton = document.createElement("div");
+    skeleton.className = "form-card";
+    skeleton.innerHTML = `
+      <link rel="stylesheet" href="./css/components/transactionForm.css">
+      <div class="form-header">
+        <div class="skeleton-form-title"></div>
+        <div class="skeleton-form-subtitle"></div>
+      </div>
+      <div class="form-content">
+        <div class="skeleton-form-row"></div>
+        <div class="skeleton-form-row"></div>
+        <div class="skeleton-form-row"></div>
+        <div class="skeleton-form-row"></div>
+        <div class="skeleton-form-row"></div>
+      </div>
+    `;
+    return skeleton;
   }
 
   render() {
     // Clear shadowRoot
     while (this.shadowRoot.firstChild) {
       this.shadowRoot.removeChild(this.shadowRoot.firstChild)
+    }
+
+    if (this.loading) {
+      this.shadowRoot.appendChild(this.renderSkeleton());
+      return;
     }
 
     // Add stylesheet (only once, correct path)
@@ -121,7 +147,12 @@ class TransactionForm extends HTMLElement {
   }
 
   connectedCallback() {
-    this.render()
+    this.loading = true;
+    this.render();
+    setTimeout(() => {
+      this.loading = false;
+      this.render();
+    }, 900); // Simulate loading, replace with real async if needed
   }
 }
 
