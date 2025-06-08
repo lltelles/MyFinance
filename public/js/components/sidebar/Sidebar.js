@@ -54,6 +54,12 @@ class AppSidebar extends HTMLElement {
   }
 
   render() {
+    // Detect current page to set active menu item
+    const currentPage = window.location.pathname.split('/').pop();
+    this.menuItems.forEach(item => {
+      item.active = (item.url === currentPage);
+    });
+
     this.classList.add('sidebar');
     if (this._isOpen) {
       this.classList.add('open');

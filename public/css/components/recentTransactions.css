@@ -11,6 +11,7 @@
 .card-header {
   padding: 16px 20px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: white;
 }
 
 .card-title {
@@ -22,8 +23,9 @@
 
 .card-content {
   padding: 16px 20px;
-  display: grid;
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
   height: 450px;
   min-height: 450px;
   max-height: 450px;
@@ -53,6 +55,9 @@
     max-height: 250px;
     min-height: 180px;
     height: auto;
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
   }
 }
 
@@ -63,12 +68,54 @@
 }
 
 .transaction-item {
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 12px;
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 8px;
+  position: relative;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+/* Move transaction-amount and transaction-date left on hover to make space for delete button */
+.transaction-item:hover .transaction-amount {
+  transform: translateX(-70px);
+  transition: transform 0.2s;
+}
+
+.transaction-amount,
+.transaction-date {
+  transition: transform 0.2s;
+}
+
+.delete-hover {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  background: rgba(239, 68, 68, 0.15);
+  border-radius: 0 8px 8px 0;
+  padding: 0 18px;
+  z-index: 2;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.transaction-item:hover .delete-hover {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.transaction-actions {
+  display: flex;
+  align-items: center;
+  margin-left: 16px;
+  height: 100%;
 }
 
 .green-border {
@@ -212,4 +259,28 @@
   100% {
     background-position: calc(200px + 100%) 0;
   }
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  color: #e53e3e;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.delete-btn:hover {
+  color: #b91c1c;
+}
+
+.empty-transactions {
+  text-align: center;
+  color: #888;
+  font-size: 15px;
+  margin-top: 40px;
+  font-weight: 500;
+  opacity: 0.85;
 }

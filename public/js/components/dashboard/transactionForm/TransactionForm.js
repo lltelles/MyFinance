@@ -1,4 +1,3 @@
-
 import { db, auth } from "../../../app.js"
 import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"
 
@@ -7,6 +6,27 @@ class TransactionForm extends HTMLElement {
   constructor() {
     super()
     this.attachShadow({ mode: "open" })
+    this.loading = true;
+  }
+
+  renderSkeleton() {
+    const skeleton = document.createElement("div");
+    skeleton.className = "form-card";
+    skeleton.innerHTML = `
+      <link rel="stylesheet" href="./css/components/transactionForm.css">
+      <div class="form-header">
+        <div class="skeleton-form-title"></div>
+        <div class="skeleton-form-subtitle"></div>
+      </div>
+      <div class="form-content">
+        <div class="skeleton-form-row"></div>
+        <div class="skeleton-form-row"></div>
+        <div class="skeleton-form-row"></div>
+        <div class="skeleton-form-row"></div>
+        <div class="skeleton-form-row"></div>
+      </div>
+    `;
+    return skeleton;
   }
 
   render() {
@@ -15,10 +35,15 @@ class TransactionForm extends HTMLElement {
       this.shadowRoot.removeChild(this.shadowRoot.firstChild)
     }
 
+    if (this.loading) {
+      this.shadowRoot.appendChild(this.renderSkeleton());
+      return;
+    }
+
     // Add stylesheet (only once, correct path)
     const linkElem = document.createElement("link")
     linkElem.setAttribute("rel", "stylesheet")
-    linkElem.setAttribute("href", "../../../public/css/components/transactionForm.css")
+    linkElem.setAttribute("href", "./css/components/transactionForm.css")
     this.shadowRoot.appendChild(linkElem)
 
     // Add form
@@ -101,6 +126,7 @@ class TransactionForm extends HTMLElement {
         value,
         category,
         date,
+        timestamp: new Date().toISOString(), // Add precise timestamp for sorting
       }
       console.log("Submitting transaction payload:", transaction) // Log payload
       try {
@@ -121,7 +147,12 @@ class TransactionForm extends HTMLElement {
   }
 
   connectedCallback() {
-    this.render()
+    this.loading = true;
+    this.render();
+    setTimeout(() => {
+      this.loading = false;
+      this.render();
+    }, 900); // Simulate loading, replace with real async if needed
   }
 }
 

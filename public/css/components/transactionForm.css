@@ -117,6 +117,40 @@ input[type="date"] {
   -moz-appearance: none;
 }
 
+/* Skeleton styles for TransactionForm loading */
+.skeleton-form-title {
+  width: 140px;
+  height: 18px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  border-radius: 4px;
+  margin-bottom: 8px;
+  animation: skeleton-loading 2s infinite linear;
+}
+.skeleton-form-subtitle {
+  width: 180px;
+  height: 14px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  border-radius: 4px;
+  margin-bottom: 16px;
+  animation: skeleton-loading 2s infinite linear;
+}
+.skeleton-form-row {
+  width: 95%;
+  height: 32px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  border-radius: 8px;
+  margin-bottom: 16px;
+  animation: skeleton-loading 2s infinite linear;
+}
+@keyframes skeleton-loading {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
 @media (max-width: 480px) {
   .form-card {
     max-width: 100%;

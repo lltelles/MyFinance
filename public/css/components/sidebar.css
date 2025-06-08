@@ -10,7 +10,7 @@
 }
 
 .sidebar {
-width: var(--sidebar-width);
+  width: var(--sidebar-width);
   height: 100vh;
   background-color: var(--sidebar-bg);
   border-right: 1px solid var(--border-color);
@@ -51,6 +51,11 @@ width: var(--sidebar-width);
   color: var(--header-bg);
 }
 
+.sidebar .menu-item.active {
+  background: var(--sidebar-active);
+  color: #222;
+}
+
 .sidebar .menu-item svg {
   width: 20px;
   height: 20px;
@@ -69,9 +74,7 @@ width: var(--sidebar-width);
 
 .sidebar-footer {
   padding: 1rem;
-  margin-top: auto; 
-  
-
+  margin-top: auto;
 }
 
 .logout-button {
@@ -83,7 +86,6 @@ width: var(--sidebar-width);
   border-radius: 4px;
   cursor: pointer;
   border: 1px solid red;
-  
 }
 
 .logout-button:hover {
