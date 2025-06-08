@@ -27,11 +27,18 @@ function register() {
 window.login = login;
 window.register = register;
 
-function myMenuFunction() {
-  var i = document.getElementById("navMenu");
-  if (i.className === "nav-menu") {
-    i.className += " responsive";
-  } else {
-    i.className = "nav-menu";
+// Remove inline onclick from HTML for menu-hamburger
+// Use only this event listener for hamburger menu toggle
+document.addEventListener('DOMContentLoaded', function() {
+  const menuHamburger = document.getElementById('menu-hamburger');
+  const navMenu = document.getElementById('navMenu');
+  if (menuHamburger && navMenu) {
+    menuHamburger.addEventListener('click', function() {
+      menuHamburger.classList.toggle('active');
+      navMenu.classList.toggle('responsive');
+    });
   }
-}
+});
+
+// Remove or comment out myMenuFunction to avoid conflicts
+// function myMenuFunction() {}
