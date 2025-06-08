@@ -64,9 +64,6 @@ class RecentTransactions extends HTMLElement {
       this.loading = false;
       this.render();
 
-      // Armazenar em cache no armazenamento local
-      localStorage.setItem("recentTransactions", JSON.stringify(transactions));
-
       return transactions;
     } catch (error) {
       console.error("Erro ao carregar transações:", error);
@@ -270,15 +267,16 @@ class RecentTransactions extends HTMLElement {
   }
 
   async connectedCallback() {
-    // Load from cache first if available
-    const cached = localStorage.getItem("recentTransactions");
-    if (cached) {
-      this.transactions = JSON.parse(cached);
-    }
+    // Keep loading skeleton, but do not load from localStorage
+    this.loading = true;
+    this.render();
     auth.onAuthStateChanged(async (user) => {
       if (user) {
         await this.getTransactions(user.uid);
       } else {
+        this.loading = false;
+        this.transactions = [];
+        this.render();
         console.log("Usuário não autenticado");
       }
     });
